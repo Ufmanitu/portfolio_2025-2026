@@ -1,0 +1,3056 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C# Portfólió – Éves munkák</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;700;800&display=swap');
+
+  :root {
+    --bg:       #0d0f14;
+    --surface:  #141720;
+    --surface2: #1c2030;
+    --border:   #2a2f42;
+    --accent:   #6c8cff;
+    --accent2:  #ff6b6b;
+    --green:    #4ade80;
+    --yellow:   #fbbf24;
+    --text:     #d4d8e8;
+    --muted:    #6b7280;
+    --kw:       #c084fc;
+    --type:     #67e8f9;
+    --str:      #86efac;
+    --num:      #fbbf24;
+    --comment:  #4b5563;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Syne', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, #0d0f14 0%, #141a2e 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 3rem 2rem 2.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -60px; left: 50%; transform: translateX(-50%);
+    width: 600px; height: 300px;
+    background: radial-gradient(ellipse, rgba(108,140,255,.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  header h1 {
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, #fff 30%, var(--accent));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  header p { color: var(--muted); margin-top: .5rem; font-size: .95rem; }
+
+  /* NAV */
+  nav {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: .75rem 1.5rem;
+    display: flex; gap: .5rem; flex-wrap: wrap;
+    position: sticky; top: 0; z-index: 100;
+  }
+  nav a {
+    font-size: .78rem; font-weight: 700; letter-spacing: .05em;
+    text-decoration: none; color: var(--muted);
+    padding: .35rem .75rem; border-radius: 6px;
+    border: 1px solid transparent;
+    transition: all .2s;
+  }
+  nav a:hover, nav a.active {
+    color: var(--accent); border-color: var(--accent);
+    background: rgba(108,140,255,.08);
+  }
+
+  /* LAYOUT */
+  main { max-width: 1100px; margin: 0 auto; padding: 2.5rem 1.5rem 5rem; }
+
+  /* SECTION */
+  .section { margin-bottom: 4rem; }
+  .section-header {
+    display: flex; align-items: center; gap: 1rem;
+    margin-bottom: 2rem; padding-bottom: .75rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-badge {
+    background: var(--accent); color: #0d0f14;
+    font-size: .7rem; font-weight: 800; letter-spacing: .1em;
+    padding: .25rem .6rem; border-radius: 4px;
+    white-space: nowrap;
+  }
+  .section-badge.winforms { background: var(--green); }
+  .section-header h2 { font-size: 1.4rem; font-weight: 700; }
+
+  /* TASK CARD */
+  .task {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
+  .task-header {
+    padding: 1rem 1.25rem;
+    display: flex; align-items: flex-start; gap: 1rem;
+    cursor: pointer;
+    user-select: none;
+    transition: background .2s;
+  }
+  .task-header:hover { background: var(--surface2); }
+  .task-num {
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--accent); font-family: 'JetBrains Mono', monospace;
+    font-size: .75rem; font-weight: 600;
+    padding: .2rem .5rem; border-radius: 4px; white-space: nowrap;
+    margin-top: .15rem;
+  }
+  .task-info { flex: 1; }
+  .task-title { font-size: 1rem; font-weight: 700; }
+  .task-desc { color: var(--muted); font-size: .82rem; margin-top: .25rem; line-height: 1.5; }
+  .task-toggle {
+    color: var(--muted); font-size: 1.2rem; transition: transform .3s;
+    flex-shrink: 0; margin-top: .1rem;
+  }
+  .task.open .task-toggle { transform: rotate(180deg); }
+  .task-body { display: none; border-top: 1px solid var(--border); }
+  .task.open .task-body { display: block; }
+
+  /* CODE BLOCK */
+  .code-wrap {
+    background: #090b10;
+    position: relative;
+  }
+  .code-label {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: .6rem 1.25rem; background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+  }
+  .code-lang { font-size: .7rem; font-weight: 700; letter-spacing: .1em; color: var(--muted); }
+  .copy-btn {
+    font-size: .7rem; font-family: 'JetBrains Mono', monospace;
+    background: var(--border); color: var(--text);
+    border: none; border-radius: 4px; padding: .25rem .7rem;
+    cursor: pointer; transition: background .2s;
+  }
+  .copy-btn:hover { background: var(--accent); color: #0d0f14; }
+  pre {
+    padding: 1.25rem;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .8rem;
+    line-height: 1.7;
+    color: #abb2bf;
+    tab-size: 4;
+  }
+
+  /* SYNTAX */
+  .kw  { color: var(--kw); }
+  .tp  { color: var(--type); }
+  .str { color: var(--str); }
+  .nm  { color: var(--num); }
+  .cm  { color: var(--comment); font-style: italic; }
+  .fn  { color: #ffd580; }
+  .id  { color: var(--text); }
+
+  /* STAT BAR */
+  .stats {
+    display: flex; gap: 1.5rem; flex-wrap: wrap;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 1rem 1.5rem;
+    margin-bottom: 2.5rem;
+  }
+  .stat { text-align: center; }
+  .stat-val { font-size: 1.6rem; font-weight: 800; color: var(--accent); }
+  .stat-label { font-size: .72rem; color: var(--muted); letter-spacing: .06em; }
+
+  /* ═══════════════════════════════════
+     EDITOR ZONE – új komponens
+  ═══════════════════════════════════ */
+  .editor-zone {
+    border-top: 2px solid var(--border);
+    background: #07090e;
+  }
+
+  .editor-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: .55rem 1.25rem;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    gap: .75rem;
+    flex-wrap: wrap;
+  }
+
+  .editor-label-group {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+  }
+
+  .editor-badge {
+    font-size: .65rem;
+    font-weight: 800;
+    letter-spacing: .1em;
+    color: #0d0f14;
+    background: var(--accent);
+    padding: .18rem .55rem;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+  .editor-badge.winforms-badge {
+    background: var(--yellow);
+  }
+
+  .editor-lang-tag {
+    font-size: .68rem;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: .04em;
+  }
+
+  .run-btn {
+    background: var(--accent);
+    color: #07090e;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .75rem;
+    font-weight: 700;
+    letter-spacing: .04em;
+    border: none;
+    border-radius: 6px;
+    padding: .38rem 1.1rem;
+    cursor: pointer;
+    transition: background .18s, transform .1s;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .run-btn:hover:not(:disabled) {
+    background: #8aa4ff;
+    transform: translateY(-1px);
+  }
+  .run-btn:active:not(:disabled) { transform: translateY(0); }
+  .run-btn:disabled {
+    background: #2a2f42;
+    color: var(--muted);
+    cursor: not-allowed;
+  }
+  .run-btn.running {
+    background: var(--yellow);
+    color: #07090e;
+    animation: pulse-btn .8s ease-in-out infinite;
+  }
+  @keyframes pulse-btn {
+    0%, 100% { opacity: 1; }
+    50% { opacity: .75; }
+  }
+
+  .code-editor {
+    display: block;
+    width: 100%;
+    background: #07090e;
+    color: #abb2bf;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .79rem;
+    line-height: 1.7;
+    padding: 1.1rem 1.25rem;
+    border: none;
+    outline: none;
+    resize: vertical;
+    min-height: 220px;
+    tab-size: 4;
+    caret-color: var(--accent);
+  }
+  .code-editor:focus {
+    box-shadow: inset 0 0 0 1px rgba(108,140,255,.25);
+  }
+
+  .stdin-row {
+    display: flex;
+    align-items: flex-start;
+    gap: .75rem;
+    padding: .6rem 1.25rem;
+    background: var(--surface2);
+    border-top: 1px solid var(--border);
+  }
+  .stdin-label {
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .06em;
+    color: var(--green);
+    font-family: 'JetBrains Mono', monospace;
+    white-space: nowrap;
+    margin-top: .3rem;
+    flex-shrink: 0;
+  }
+  .stdin-input {
+    flex: 1;
+    background: #090b10;
+    color: var(--green);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .76rem;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: .38rem .65rem;
+    resize: vertical;
+    min-height: 40px;
+    max-height: 120px;
+    outline: none;
+    line-height: 1.55;
+    transition: border-color .2s;
+  }
+  .stdin-input:focus { border-color: var(--green); }
+
+  .console-out {
+    border-top: 1px solid var(--border);
+    display: none;
+  }
+  .console-out.visible { display: block; }
+
+  .console-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: .38rem 1.25rem;
+    background: #05070c;
+    border-bottom: 1px solid var(--border);
+  }
+  .console-header-left {
+    display: flex;
+    align-items: center;
+    gap: .65rem;
+  }
+  .console-title {
+    font-size: .67rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .console-status-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--muted);
+    flex-shrink: 0;
+    transition: background .3s;
+  }
+  .console-status-dot.ok  { background: var(--green); }
+  .console-status-dot.err { background: var(--accent2); }
+  .console-status-dot.running { background: var(--yellow); animation: pulse-btn .5s ease-in-out infinite; }
+
+  .clear-btn {
+    font-size: .66rem;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 3px;
+    padding: .18rem .55rem;
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    transition: all .15s;
+  }
+  .clear-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+
+  .console-content {
+    padding: .85rem 1.25rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .78rem;
+    line-height: 1.65;
+    color: var(--green);
+    background: #04050a;
+    min-height: 55px;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+  .console-content.has-error { color: var(--accent2); }
+  .console-content.loading-state { color: var(--yellow); font-style: italic; }
+
+  /* API Beállítás gomb */
+
+  /* WinForms note */
+  .winforms-note {
+    display: flex;
+    align-items: flex-start;
+    gap: .7rem;
+    padding: .8rem 1.25rem;
+    background: rgba(251,191,36,.05);
+    border-top: 1px solid rgba(251,191,36,.18);
+  }
+  .winforms-note-icon { font-size: 1rem; flex-shrink: 0; }
+  .winforms-note-text { font-size: .79rem; color: rgba(251,191,36,.85); line-height: 1.55; }
+  .winforms-note-text strong { color: var(--yellow); }
+
+  /* Console demo label */
+  .demo-divider {
+    display: flex; align-items: center; gap: .75rem;
+    padding: .55rem 1.25rem;
+    background: rgba(74,222,128,.04);
+    border-top: 1px solid rgba(74,222,128,.15);
+  }
+  .demo-divider span {
+    font-size: .67rem; font-weight: 800; letter-spacing: .1em;
+    color: var(--green); font-family: 'JetBrains Mono', monospace;
+  }
+  .demo-divider::after {
+    content: ''; flex: 1; height: 1px;
+    background: rgba(74,222,128,.15);
+  }
+
+  @media (max-width: 640px) {
+    pre { font-size: .72rem; }
+    header { padding: 2rem 1rem; }
+    .code-editor { font-size: .72rem; }
+  }
+
+  /* ── Live Server banner ── */
+  .live-server-banner {
+    background: linear-gradient(90deg, rgba(251,191,36,.12) 0%, rgba(251,191,36,.06) 100%);
+    border-bottom: 2px solid rgba(251,191,36,.35);
+    padding: .85rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .live-server-banner .lsb-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+  .live-server-banner .lsb-text {
+    flex: 1;
+    min-width: 200px;
+  }
+  .live-server-banner .lsb-title {
+    font-size: .95rem;
+    font-weight: 800;
+    color: var(--yellow);
+    letter-spacing: .01em;
+    margin-bottom: .2rem;
+  }
+  .live-server-banner .lsb-sub {
+    font-size: .78rem;
+    color: rgba(251,191,36,.7);
+    line-height: 1.5;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .live-server-banner .lsb-sub strong {
+    color: var(--yellow);
+  }
+  .live-server-banner .lsb-steps {
+    display: flex;
+    gap: .5rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .lsb-step {
+    background: rgba(251,191,36,.12);
+    border: 1px solid rgba(251,191,36,.25);
+    border-radius: 6px;
+    padding: .3rem .75rem;
+    font-size: .72rem;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--yellow);
+    white-space: nowrap;
+  }
+  .lsb-arrow {
+    color: rgba(251,191,36,.4);
+    font-size: .8rem;
+  }
+</style>
+</head>
+<body>
+
+<div class="live-server-banner">
+  <span class="lsb-icon">⚡</span>
+  <div class="lsb-text">
+    <div class="lsb-title">A feladatok futtatásához Live Server szükséges</div>
+    <div class="lsb-sub">Kérjük, ne dupla kattintással nyissa meg! A <strong>▶ Futtatás</strong> gomb csak helyi szerverről működik.</div>
+  </div>
+  <div class="lsb-steps">
+    <span class="lsb-step">1. VS Code</span>
+    <span class="lsb-arrow">→</span>
+    <span class="lsb-step">2. Extensions → „Live Server"</span>
+    <span class="lsb-arrow">→</span>
+    <span class="lsb-step">3. Jobb klikk a fájlon</span>
+    <span class="lsb-arrow">→</span>
+    <span class="lsb-step">4. Open with Live Server</span>
+  </div>
+</div>
+
+<header>
+  <h1>C# Portfólió</h1>
+  <p>Éves tananyag – Konzolos és WinForms feladatok megoldásai · Visual Studio 2022 · .NET</p>
+</header>
+
+<nav>
+  <a href="#konzol" class="active">Konzolos feladatok</a>
+  <a href="#winforms">WinForms feladatok</a>
+</nav>
+
+<main>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-val">18</div><div class="stat-label">FELADAT</div></div>
+    <div class="stat"><div class="stat-val">11</div><div class="stat-label">KONZOLOS</div></div>
+    <div class="stat"><div class="stat-val">7</div><div class="stat-label">WINFORMS</div></div>
+    <div class="stat"><div class="stat-val">C#</div><div class="stat-label">NYELV</div></div>
+  </div>
+
+  <!-- ═══════════════ KONZOLOS ═══════════════ -->
+  <section class="section" id="konzol">
+    <div class="section-header">
+      <span class="section-badge">KONZOL</span>
+      <h2>Konzolos feladatok</h2>
+    </div>
+
+    <!-- #01 -->
+    <div class="task open">
+      <div class="task-header" onclick="toggle(this)">
+        <span class="task-num">#01</span>
+        <div class="task-info">
+          <div class="task-title">Fordított szám</div>
+          <div class="task-desc">Pozitív egész szám számjegyeit fordított sorrendbe írjuk. Felesleges vezető nullákat elhagyjuk. (HF)</div>
+        </div>
+        <span class="task-toggle">▼</span>
+      </div>
+      <div class="task-body">
+        <div class="code-wrap">
+          <div class="code-label"><span class="code-lang">C# · KONZOL</span><button class="copy-btn" onclick="copyCode(this)">Másolás</button></div>
+<pre><span class="kw">using</span> System;
+
+<span class="kw">namespace</span> ForditottSzam
+{
+    <span class="kw">class</span> <span class="tp">Program</span>
+    {
+        <span class="kw">static void</span> <span class="fn">Main</span>(<span class="kw">string</span>[] args)
+        {
+            Console.<span class="fn">Write</span>(<span class="str">"Adja meg a pozitív egész számot: "</span>);
+            <span class="kw">string</span> input = Console.<span class="fn">ReadLine</span>().<span class="fn">Trim</span>();
+
+            <span class="cm">// Ha negatív előjel van, kezeljük</span>
+            <span class="kw">bool</span> negativ = input.<span class="fn">StartsWith</span>(<span class="str">"-"</span>);
+            <span class="kw">if</span> (negativ) input = input.<span class="fn">Substring</span>(<span class="nm">1</span>);
+
+            <span class="kw">char</span>[] chars = input.<span class="fn">ToCharArray</span>();
+            Array.<span class="fn">Reverse</span>(chars);
+            <span class="kw">string</span> fordított = <span class="kw">new string</span>(chars).<span class="fn">TrimStart</span>(<span class="str">'0'</span>);
+
+            <span class="kw">if</span> (fordított == <span class="str">""</span>) fordított = <span class="str">"0"</span>;
+            <span class="kw">if</span> (negativ &amp;&amp; fordított != <span class="str">"0"</span>) fordított = <span class="str">"-"</span> + fordított;
+
+            Console.<span class="fn">WriteLine</span>(<span class="str">$"Fordított szám: {fordított}"</span>);
+        }
+    }
+}</pre>
+        </div>
+        <div class="editor-zone">
+          <div class="editor-toolbar">
+            <div class="editor-label-group">
+              <span class="editor-badge">✏ SZERKESZTHETŐ</span>
+              <span class="editor-lang-tag">C# · JDoodle API · online futtatás</span>
+            </div>
+            <button class="run-btn" onclick="runCode(this)">▶ Futtatás</button>
+          </div>
+          <textarea class="code-editor" id="code-01" spellcheck="false"></textarea>
+          <div class="stdin-row">
+            <span class="stdin-label">⌨ BEMENET<br><span style="font-size:.6rem;font-weight:400;color:var(--muted)">itt szerkeszthető</span></span>
+            <textarea class="stdin-input" id="stdin-01" spellcheck="false"></textarea>
+          </div>
+          <div class="console-out" id="out-01">
+            <div class="console-header">
+              <div class="console-header-left">
+                <div class="console-status-dot" id="dot-01"></div>
+                <span class="console-title">KONZOL KIMENET</span>
+              </div>
+              <button class="clear-btn" onclick="clearOut('01')">✕ Töröl</button>
+            </div>
+            <pre class="console-content" id="console-01"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- #02 -->
+    <div class="task">
+      <div class="task-header" onclick="toggle(this)">
+        <span class="task-num">#02</span>
+        <div class="task-info">
+          <div class="task-title">Szorzatok száma – páros szorzatú részsorozatok</div>
+          <div class="task-desc">Hány nem-üres részsorozatnak (sorrendtartó, nem feltétlenül szomszédos) páros a szorzata? (HF)</div>
+        </div>
+        <span class="task-toggle">▼</span>
+      </div>
+      <div class="task-body">
+        <div class="code-wrap">
+          <div class="code-label"><span class="code-lang">C# · KONZOL</span><button class="copy-btn" onclick="copyCode(this)">Másolás</button></div>
+<pre><span class="kw">using</span> System;
+
+<span class="kw">namespace</span> SzorzatokSzama
+{
+    <span class="kw">class</span> <span class="tp">Program</span>
+    {
+        <span class="kw">static void</span> <span class="fn">Main</span>(<span class="kw">string</span>[] args)
+        {
+            Console.<span class="fn">Write</span>(<span class="str">"Elemek száma (n): "</span>);
+            <span class="kw">int</span> n = <span class="tp">int</span>.<span class="fn">Parse</span>(Console.<span class="fn">ReadLine</span>());
+            <span class="kw">int</span>[] tomb = <span class="kw">new int</span>[n];
+
+            <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i &lt; n; i++)
+            {
+                Console.<span class="fn">Write</span>(<span class="str">$"  {i + 1}. elem: "</span>);
+                tomb[i] = <span class="tp">int</span>.<span class="fn">Parse</span>(Console.<span class="fn">ReadLine</span>());
+            }
+
+            <span class="cm">// Kulcsfelismerés:
+            // Összes nem-üres részsorozat: 2^n - 1
+            // Páratlan szorzatú ↔ MINDEN eleme páratlan → 2^k - 1 (k = páratlan elemek száma)
+            // Páros szorzatú = (2^n - 1) - (2^k - 1) = 2^n - 2^k</span>
+
+            <span class="kw">int</span> paratlanDb = <span class="nm">0</span>;
+            <span class="kw">foreach</span> (<span class="kw">int</span> x <span class="kw">in</span> tomb)
+                <span class="kw">if</span> (x % <span class="nm">2</span> != <span class="nm">0</span>) paratlanDb++;
+
+            <span class="kw">long</span> osszes   = (<span class="nm">1L</span> &lt;&lt; n) - <span class="nm">1</span>;
+            <span class="kw">long</span> mindParat = (<span class="nm">1L</span> &lt;&lt; paratlanDb) - <span class="nm">1</span>;
+            <span class="kw">long</span> parosSzorzat = osszes - mindParat;
+
+            Console.<span class="fn">WriteLine</span>(<span class="str">$"\nPáros szorzatú részsorozatok száma: {parosSzorzat}"</span>);
+        }
+    }
+}</pre>
+        </div>
+        <div class="editor-zone">
+          <div class="editor-toolbar">
+            <div class="editor-label-group">
+              <span class="editor-badge">✏ SZERKESZTHETŐ</span>
+              <span class="editor-lang-tag">C# · JDoodle API · online futtatás</span>
+            </div>
+            <button class="run-btn" onclick="runCode(this)">▶ Futtatás</button>
+          </div>
+          <textarea class="code-editor" id="code-02" spellcheck="false"></textarea>
+          <div class="stdin-row">
+            <span class="stdin-label">⌨ BEMENET<br><span style="font-size:.6rem;font-weight:400;color:var(--muted)">itt szerkeszthető</span></span>
+            <textarea class="stdin-input" id="stdin-02" spellcheck="false"></textarea>
+          </div>
+          <div class="console-out" id="out-02">
+            <div class="console-header">
+              <div class="console-header-left">
+                <div class="console-status-dot" id="dot-02"></div>
+                <span class="console-title">KONZOL KIMENET</span>
+              </div>
+              <button class="clear-btn" onclick="clearOut('02')">✕ Töröl</button>
+            </div>
+            <pre class="console-content" id="console-02"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- #03 -->
+    <div class="task">
+      <div class="task-header" onclick="toggle(this)">
+        <span class="task-num">#03</span>
+        <div class="task-info">
+          <div class="task-title">Háromszög – egyszerű ellenőrzés</div>
+          <div class="task-desc">Három szakaszhossz (törtszám is lehet) alkothat-e háromszöget? (HF + tovabbi_feladatok)</div>
+        </div>
+        <span class="task-toggle">▼</span>
+      </div>
+      <div class="task-body">
+        <div class="code-wrap">
+          <div class="code-label"><span class="code-lang">C# · KONZOL</span><button class="copy-btn" onclick="copyCode(this)">Másolás</button></div>
+<pre><span class="kw">using</span> System;
+
+<span class="kw">namespace</span> HaromszogEllenorzes
+{
+    <span class="kw">class</span> <span class="tp">Program</span>
+    {
+        <span class="kw">static void</span> <span class="fn">Main</span>(<span class="kw">string</span>[] args)
+        {
+            Console.<span class="fn">Write</span>(<span class="str">"a oldal hossza: "</span>);
+            <span class="kw">double</span> a = <span class="tp">double</span>.<span class="fn">Parse</span>(Console.<span class="fn">ReadLine</span>().<span class="fn">Replace</span>(<span class="str">'.'</span>, <span class="str">','</span>));
+            Console.<span class="fn">Write</span>(<span class="str">"b oldal hossza: "</span>);
+            <span class="kw">double</span> b = <span class="tp">double</span>.<span class="fn">Parse</span>(Console.<span class="fn">ReadLine</span>().<span class="fn">Replace</span>(<span class="str">'.'</span>, <span class="str">','</span>));
+            Console.<span class="fn">Write</span>(<span class="str">"c oldal hossza: "</span>);
+            <span class="kw">double</span> c = <span class="tp">double</span>.<span class="fn">Parse</span>(Console.<span class="fn">ReadLine</span>().<span class="fn">Replace</span>(<span class="str">'.'</span>, <span class="str">','</span>));
+
+            <span class="kw">bool</span> pozitiv = a &gt; <span class="nm">0</span> &amp;&amp; b &gt; <span class="nm">0</span> &amp;&amp; c &gt; <span class="nm">0</span>;
+            <span class="kw">bool</span> haromszogEgyenlotseg = a + b &gt; c &amp;&amp; a + c &gt; b &amp;&amp; b + c &gt; a;
+
+            <span class="kw">if</span> (pozitiv &amp;&amp; haromszogEgyenlotseg)
+                Console.<span class="fn">WriteLine</span>(<span class="str">"✓ Igen, lehetnek egy háromszög oldalai."</span>);
+            <span class="kw">else if</span> (!pozitiv)
+                Console.<span class="fn">WriteLine</span>(<span class="str">"✗ Az oldalak csak pozitív számok lehetnek."</span>);
+            <span class="kw">else</span>
+                Console.<span class="fn">WriteLine</span>(<span class="str">"✗ Nem, ezek az oldalak nem alkothatnak háromszöget."</span>);
+        }
+    }
+}</pre>
+        </div>
+        <div class="editor-zone">
+          <div class="editor-toolbar">
+            <div class="editor-label-group">
+              <span class="editor-badge">✏ SZERKESZTHETŐ</span>
+              <span class="editor-lang-tag">C# · JDoodle API · online futtatás</span>
+            </div>
+            <button class="run-btn" onclick="runCode(this)">▶ Futtatás</button>
+          </div>
+          <textarea class="code-editor" id="code-03" spellcheck="false"></textarea>
+          <div class="stdin-row">
+            <span class="stdin-label">⌨ BEMENET<br><span style="font-size:.6rem;font-weight:400;color:var(--muted)">itt szerkeszthető</span></span>
+            <textarea class="stdin-input" id="stdin-03" spellcheck="false"></textarea>
+          </div>
+          <div class="console-out" id="out-03">
+            <div class="console-header">
+              <div class="console-header-left">
+                <div class="console-status-dot" id="dot-03"></div>
+                <span class="console-title">KONZOL KIMENET</span>
+              </div>
+              <button class="clear-btn" onclick="clearOut('03')">✕ Töröl</button>
+            </div>
+            <pre class="console-content" id="console-03"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- #04 -->
+    <div class="task">
+      <div class="task-header" onclick="toggle(this)">
+        <span class="task-num">#04</span>
+        <div class="task-info">
+          <div class="task-title">Háromszög – teljes elemzés (oldalak + szögek)</div>
+          <div class="task-desc">Ha háromszög, akkor egyenlő oldalú / szárú / általános, és hegyesszögű / derékszögű / tompaszögű. (Dolgozat)</div>
+        </div>
+        <span class="task-toggle">▼</span>
+      </div>
+      <div class="task-body">
+        <div class="code-wrap">
+          <div class="code-label"><span class="code-lang">C# · KONZOL</span><button class="copy-btn" onclick="copyCode(this)">Másolás</button></div>
+<pre><span class="kw">using</span> System;
+
+<span class="kw">namespace</span> HaromszogElemzes
+{
+    <span class="kw">class</span> <span class="tp">Program</span>
+    {
+        <span class="kw">static void</span> <span class="fn">Main</span>(<span class="kw">string</span>[] args)
+        {
+            Console.<span class="fn">Write</span>(<span class="str">"a oldal: "</span>);
+            <span class="kw">double</span> a = <span class="tp">double</span>.<span class="fn">Parse</span>(Console.<span class="fn">ReadLine</span>().<span class="fn">Replace</span>(<span class="str">'.'</span>,<span class="str">','</span>));
+            Console.<span class="fn">Write</span>(<span class="str">"b oldal: "</span>);
+            <span class="kw">double</span> b = <span class="tp">double</span>.<span class="fn">Parse</span>(Console.<span class="fn">ReadLine</span>().<span class="fn">Replace</span>(<span class="str">'.'</span>,<span class="str">','</span>));
+            Console.<span class="fn">Write</span>(<span class="str">"c oldal: "</span>);
+            <span class="kw">double</span> c = <span class="tp">double</span>.<span class="fn">Parse</span>(Console.<span class="fn">ReadLine</span>().<span class="fn">Replace</span>(<span class="str">'.'</span>,<span class="str">','</span>));
+
+            <span class="kw">if</span> (a &lt;= <span class="nm">0</span> || b &lt;= <span class="nm">0</span> || c &lt;= <span class="nm">0</span> ||
+                !(a + b &gt; c &amp;&amp; a + c &gt; b &amp;&amp; b + c &gt; a))
+            {
+                Console.<span class="fn">WriteLine</span>(<span class="str">"Ezek nem alkothatnak háromszöget."</span>);
+                <span class="kw">return</span>;
+            }
+
+            Console.<span class="fn">WriteLine</span>(<span class="str">"Érvényes háromszög!\n"</span>);
+
+            <span class="kw">if</span> (a == b &amp;&amp; b == c)
+                Console.<span class="fn">WriteLine</span>(<span class="str">"Oldalak: Szabályos (egyenlő oldalú) háromszög"</span>);
+            <span class="kw">else if</span> (a == b || b == c || a == c)
+                Console.<span class="fn">WriteLine</span>(<span class="str">"Oldalak: Egyenlő szárú háromszög"</span>);
+            <span class="kw">else</span>
+                Console.<span class="fn">WriteLine</span>(<span class="str">"Oldalak: Általános (különböző oldalú) háromszög"</span>);
+
+            <span class="kw">double</span> cosA = (b*b + c*c - a*a) / (<span class="nm">2</span>*b*c);
+            <span class="kw">double</span> cosB = (a*a + c*c - b*b) / (<span class="nm">2</span>*a*c);
+            <span class="kw">double</span> cosC = (a*a + b*b - c*c) / (<span class="nm">2</span>*a*b);
+
+            <span class="kw">double</span> angA = Math.<span class="fn">Acos</span>(cosA) * <span class="nm">180</span> / Math.PI;
+            <span class="kw">double</span> angB = Math.<span class="fn">Acos</span>(cosB) * <span class="nm">180</span> / Math.PI;
+            <span class="kw">double</span> angC = Math.<span class="fn">Acos</span>(cosC) * <span class="nm">180</span> / Math.PI;
+
+            Console.<span class="fn">WriteLine</span>(<span class="str">$"Szögek: α = {angA:F2}°,  β = {angB:F2}°,  γ = {angC:F2}°"</span>);
+
+            <span class="kw">const double</span> EPS = <span class="nm">1e-9</span>;
+            <span class="kw">if</span> (Math.<span class="fn">Abs</span>(cosA) &lt; EPS || Math.<span class="fn">Abs</span>(cosB) &lt; EPS || Math.<span class="fn">Abs</span>(cosC) &lt; EPS)
+                Console.<span class="fn">WriteLine</span>(<span class="str">"Szögek: Derékszögű háromszög"</span>);
+            <span class="kw">else if</span> (cosA &lt; <span class="nm">0</span> || cosB &lt; <span class="nm">0</span> || cosC &lt; <span class="nm">0</span>)
+                Console.<span class="fn">WriteLine</span>(<span class="str">"Szögek: Tompaszögű háromszög"</span>);
+            <span class="kw">else</span>
+                Console.<span class="fn">WriteLine</span>(<span class="str">"Szögek: Hegyesszögű háromszög"</span>);
+        }
+    }
+}</pre>
+        </div>
+        <div class="editor-zone">
+          <div class="editor-toolbar">
+            <div class="editor-label-group">
+              <span class="editor-badge">✏ SZERKESZTHETŐ</span>
+              <span class="editor-lang-tag">C# · JDoodle API · online futtatás</span>
+            </div>
+            <button class="run-btn" onclick="runCode(this)">▶ Futtatás</button>
+          </div>
+          <textarea class="code-editor" id="code-04" spellcheck="false"></textarea>
+          <div class="stdin-row">
+            <span class="stdin-label">⌨ BEMENET<br><span style="font-size:.6rem;font-weight:400;color:var(--muted)">itt szerkeszthető</span></span>
+            <textarea class="stdin-input" id="stdin-04" spellcheck="false"></textarea>
+          </div>
+          <div class="console-out" id="out-04">
+            <div class="console-header">
+              <div class="console-header-left">
+                <div class="console-status-dot" id="dot-04"></div>
+                <span class="console-title">KONZOL KIMENET</span>
+              </div>
+              <button class="clear-btn" onclick="clearOut('04')">✕ Töröl</button>
+            </div>
+            <pre class="console-content" id="console-04"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- #05 -->
+    <div class="task">
+      <div class="task-header" onclick="toggle(this)">
+        <span class="task-num">#05</span>
+        <div class="task-info">
+          <div class="task-title">Évszak meghatározása</div>
+          <div class="task-desc">Hónap nevéből meghatározzuk az évszakot. (tovabbi_feladatok)</div>
+        </div>
+        <span class="task-toggle">▼</span>
+      </div>
+      <div class="task-body">
+        <div class="code-wrap">
+          <div class="code-label"><span class="code-lang">C# · KONZOL</span><button class="copy-btn" onclick="copyCode(this)">Másolás</button></div>
+<pre><span class="kw">using</span> System;
+
+<span class="kw">namespace</span> Evszak
+{
+    <span class="kw">class</span> <span class="tp">Program</span>
+    {
+        <span class="kw">static void</span> <span class="fn">Main</span>(<span class="kw">string</span>[] args)
+        {
+            Console.<span class="fn">Write</span>(<span class="str">"Adja meg a hónap nevét: "</span>);
+            <span class="kw">string</span> honap = Console.<span class="fn">ReadLine</span>().<span class="fn">Trim</span>().<span class="fn">ToLower</span>();
+
+            <span class="kw">string</span> evszak = honap <span class="kw">switch</span>
+            {
+                <span class="str">"március"</span>   <span class="kw">or</span> <span class="str">"április"</span>  <span class="kw">or</span> <span class="str">"május"</span>     =&gt; <span class="str">"🌱 Tavasz"</span>,
+                <span class="str">"június"</span>    <span class="kw">or</span> <span class="str">"július"</span>   <span class="kw">or</span> <span class="str">"augusztus"</span> =&gt; <span class="str">"☀️ Nyár"</span>,
+                <span class="str">"szeptember"</span> <span class="kw">or</span> <span class="str">"október"</span> <span class="kw">or</span> <span class="str">"november"</span>  =&gt; <span class="str">"🍂 Ősz"</span>,
+                <span class="str">"december"</span>  <span class="kw">or</span> <span class="str">"január"</span>  <span class="kw">or</span> <span class="str">"február"</span>   =&gt; <span class="str">"❄️ Tél"</span>,
+                _ =&gt; <span class="str">"Ismeretlen hónap"</span>
+            };
+
+            Console.<span class="fn">WriteLine</span>(<span class="str">$"Évszak: {evszak}"</span>);
+        }
+    }
+}</pre>
+        </div>
+        <div class="editor-zone">
+          <div class="editor-toolbar">
+            <div class="editor-label-group">
+              <span class="editor-badge">✏ SZERKESZTHETŐ</span>
+              <span class="editor-lang-tag">C# · JDoodle API · online futtatás</span>
+            </div>
+            <button class="run-btn" onclick="runCode(this)">▶ Futtatás</button>
+          </div>
+          <textarea class="code-editor" id="code-05" spellcheck="false"></textarea>
+          <div class="stdin-row">
+            <span class="stdin-label">⌨ BEMENET<br><span style="font-size:.6rem;font-weight:400;color:var(--muted)">itt szerkeszthető</span></span>
+            <textarea class="stdin-input" id="stdin-05" spellcheck="false"></textarea>
+          </div>
+          <div class="console-out" id="out-05">
+            <div class="console-header">
+              <div class="console-header-left">
+                <div class="console-status-dot" id="dot-05"></div>
+                <span class="console-title">KONZOL KIMENET</span>
+              </div>
+              <button class="clear-btn" onclick="clearOut('05')">✕ Töröl</button>
+            </div>
+            <pre class="console-content" id="console-05"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- #06 -->
+    <div class="task">
+      <div class="task-header" onclick="toggle(this)">
+        <span class="task-num">#06</span>
+        <div class="task-info">
+          <div class="task-title">Téglatest – lapátló, testátló, felszín, térfogat</div>
+          <div class="task-desc">Három oldalhossz alapján kiszámítjuk a téglatest minden jellemzőjét. (tovabbi_feladatok)</div>
+        </div>
+        <span class="task-toggle">▼</span>
+      </div>
+      <div class="task-body">
+        <div class="code-wrap">
+          <div class="code-label"><span class="code-lang">C# · KONZOL</span><button class="copy-btn" onclick="copyCode(this)">Másolás</button></div>
+<pre><span class="kw">using</span> System;
+
+<span class="kw">namespace</span> Teglatest
+{
+    <span class="kw">class</span> <span class="tp">Program</span>
+    {
+        <span class="kw">static void</span> <span class="fn">Main</span>(<span class="kw">string</span>[] args)
+        {
+            Console.<span class="fn">Write</span>(<span class="str">"a (hossz):    "</span>); <span class="kw">double</span> a = <span class="tp">double</span>.<span class="fn">Parse</span>(Console.<span class="fn">ReadLine</span>().<span class="fn">Replace</span>(<span class="str">'.'</span>,<span class="str">','</span>));
+            Console.<span class="fn">Write</span>(<span class="str">"b (szélesség): "</span>); <span class="kw">double</span> b = <span class="tp">double</span>.<span class="fn">Parse</span>(Console.<span class="fn">ReadLine</span>().<span class="fn">Replace</span>(<span class="str">'.'</span>,<span class="str">','</span>));
+            Console.<span class="fn">Write</span>(<span class="str">"c (magasság): "</span>); <span class="kw">double</span> c = <span class="tp">double</span>.<span class="fn">Parse</span>(Console.<span class="fn">ReadLine</span>().<span class="fn">Replace</span>(<span class="str">'.'</span>,<span class="str">','</span>));
+
+            <span class="kw">double</span> dAB = Math.<span class="fn">Sqrt</span>(a*a + b*b);
+            <span class="kw">double</span> dBC = Math.<span class="fn">Sqrt</span>(b*b + c*c);
+            <span class="kw">double</span> dAC = Math.<span class="fn">Sqrt</span>(a*a + c*c);
+            <span class="kw">double</span> testAtlo = Math.<span class="fn">Sqrt</span>(a*a + b*b + c*c);
+            <span class="kw">double</span> felszin  = <span class="nm">2</span> * (a*b + b*c + a*c);
+            <span class="kw">double</span> terfogat = a * b * c;
+
+            Console.<span class="fn">WriteLine</span>(<span class="str">$"\nLapátló (ab): {dAB:F4}"</span>);
+            Console.<span class="fn">WriteLine</span>(<span class="str">$"Lapátló (bc): {dBC:F4}"</span>);
+            Console.<span class="fn">WriteLine</span>(<span class="str">$"Lapátló (ac): {dAC:F4}"</span>);
+            Console.<span class="fn">WriteLine</span>(<span class="str">$"Testátló:     {testAtlo:F4}"</span>);
+            Console.<span class="fn">WriteLine</span>(<span class="str">$"Felszín:      {felszin:F4}"</span>);
+            Console.<span class="fn">WriteLine</span>(<span class="str">$"Térfogat:     {terfogat:F4}"</span>);
+        }
+    }
+}</pre>
+        </div>
+        <div class="editor-zone">
+          <div class="editor-toolbar">
+            <div class="editor-label-group">
+              <span class="editor-badge">✏ SZERKESZTHETŐ</span>
+              <span class="editor-lang-tag">C# · JDoodle API · online futtatás</span>
+            </div>
+            <button class="run-btn" onclick="runCode(this)">▶ Futtatás</button>
+          </div>
+          <textarea class="code-editor" id="code-06" spellcheck="false"></textarea>
+          <div class="stdin-row">
+            <span class="stdin-label">⌨ BEMENET<br><span style="font-size:.6rem;font-weight:400;color:var(--muted)">itt szerkeszthető</span></span>
+            <textarea class="stdin-input" id="stdin-06" spellcheck="false"></textarea>
+          </div>
+          <div class="console-out" id="out-06">
+            <div class="console-header">
+              <div class="console-header-left">
+                <div class="console-status-dot" id="dot-06"></div>
+                <span class="console-title">KONZOL KIMENET</span>
+              </div>
+              <button class="clear-btn" onclick="clearOut('06')">✕ Töröl</button>
+            </div>
+            <pre class="console-content" id="console-06"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- #07 -->
+    <div class="task">
+      <div class="task-header" onclick="toggle(this)">
+        <span class="task-num">#07</span>
+        <div class="task-info">
+          <div class="task-title">Nyelvi köszöntés</div>
+          <div class="task-desc">Ha egyetlen ismert nyelven sem válaszol igennel, ♥ karakter jelenik meg. (tovabbi_feladatok)</div>
+        </div>
+        <span class="task-toggle">▼</span>
+      </div>
+      <div class="task-body">
+        <div class="code-wrap">
+          <div class="code-label"><span class="code-lang">C# · KONZOL</span><button class="copy-btn" onclick="copyCode(this)">Másolás</button></div>
+<pre><span class="kw">using</span> System;
+
+<span class="kw">namespace</span> NyelviKoszonto
+{
+    <span class="kw">class</span> <span class="tp">Program</span>
+    {
+        <span class="kw">static bool</span> <span class="fn">KérdezKöszön</span>(<span class="kw">string</span> kérdés, <span class="kw">string</span> igenSzó, <span class="kw">string</span> köszöntés)
+        {
+            Console.<span class="fn">Write</span>(kérdés + <span class="str">" "</span>);
+            <span class="kw">string</span> válasz = Console.<span class="fn">ReadLine</span>().<span class="fn">Trim</span>().<span class="fn">ToLower</span>();
+            <span class="kw">if</span> (válasz == igenSzó)
+            {
+                Console.<span class="fn">WriteLine</span>(köszöntés);
+                <span class="kw">return true</span>;
+            }
+            <span class="kw">return false</span>;
+        }
+
+        <span class="kw">static void</span> <span class="fn">Main</span>(<span class="kw">string</span>[] args)
+        {
+            <span class="kw">bool</span> koszon = <span class="kw">false</span>;
+
+            koszon |= <span class="fn">KérdezKöszön</span>(<span class="str">"Beszél magyarul? (igen/nem):"</span>,  <span class="str">"igen"</span>,  <span class="str">"Szia! Üdvözlöm!"</span>);
+            koszon |= <span class="fn">KérdezKöszön</span>(<span class="str">"Speaks English?  (yes/no):"</span>,    <span class="str">"yes"</span>,   <span class="str">"Hello! Welcome!"</span>);
+            koszon |= <span class="fn">KérdezKöszön</span>(<span class="str">"Sprechen Sie Deutsch? (ja/nein):"</span>, <span class="str">"ja"</span>, <span class="str">"Hallo! Willkommen!"</span>);
+
+            <span class="kw">if</span> (!koszon)
+                Console.<span class="fn">WriteLine</span>(<span class="str">"\u2665"</span>);
+        }
+    }
+}</pre>
+        </div>
+        <div class="editor-zone">
+          <div class="editor-toolbar">
+            <div class="editor-label-group">
+              <span class="editor-badge">✏ SZERKESZTHETŐ</span>
+              <span class="editor-lang-tag">C# · JDoodle API · online futtatás</span>
+            </div>
+            <button class="run-btn" onclick="runCode(this)">▶ Futtatás</button>
+          </div>
+          <textarea class="code-editor" id="code-07" spellcheck="false"></textarea>
+          <div class="stdin-row">
+            <span class="stdin-label">⌨ BEMENET<br><span style="font-size:.6rem;font-weight:400;color:var(--muted)">itt szerkeszthető</span></span>
+            <textarea class="stdin-input" id="stdin-07" spellcheck="false"></textarea>
+          </div>
+          <div class="console-out" id="out-07">
+            <div class="console-header">
+              <div class="console-header-left">
+                <div class="console-status-dot" id="dot-07"></div>
+                <span class="console-title">KONZOL KIMENET</span>
+              </div>
+              <button class="clear-btn" onclick="clearOut('07')">✕ Töröl</button>
+            </div>
+            <pre class="console-content" id="console-07"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- #08 -->
+    <div class="task">
+      <div class="task-header" onclick="toggle(this)">
+        <span class="task-num">#08</span>
+        <div class="task-info">
+          <div class="task-title">10 egész szám – minimum és maximum</div>
+          <div class="task-desc">Saját metódusokkal (Beolvas / Kiir) keressük meg a legkisebbet és a legnagyobbat. (Dolgozat)</div>
+        </div>
+        <span class="task-toggle">▼</span>
+      </div>
+      <div class="task-body">
+        <div class="code-wrap">
+          <div class="code-label"><span class="code-lang">C# · KONZOL</span><button class="copy-btn" onclick="copyCode(this)">Másolás</button></div>
+<pre><span class="kw">using</span> System;
+
+<span class="kw">namespace</span> TizSzamMinMax
+{
+    <span class="kw">class</span> <span class="tp">Program</span>
+    {
+        <span class="kw">static int</span>[] <span class="fn">Beolvas</span>()
+        {
+            <span class="kw">int</span>[] tomb = <span class="kw">new int</span>[<span class="nm">10</span>];
+            Console.<span class="fn">WriteLine</span>(<span class="str">"Adjon meg 10 egész számot:"</span>);
+            <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i &lt; <span class="nm">10</span>; i++)
+            {
+                Console.<span class="fn">Write</span>(<span class="str">$"  {i + 1,2}. szám: "</span>);
+                tomb[i] = <span class="tp">int</span>.<span class="fn">Parse</span>(Console.<span class="fn">ReadLine</span>());
+            }
+            <span class="kw">return</span> tomb;
+        }
+
+        <span class="kw">static void</span> <span class="fn">Kiir</span>(<span class="kw">int</span> min, <span class="kw">int</span> max)
+        {
+            Console.<span class="fn">WriteLine</span>(<span class="str">$"\nLegkisebb: {min,-10}  Legnagyobb: {max}"</span>);
+        }
+
+        <span class="kw">static void</span> <span class="fn">Main</span>(<span class="kw">string</span>[] args)
+        {
+            <span class="kw">int</span>[] tomb = <span class="fn">Beolvas</span>();
+
+            <span class="kw">int</span> min = tomb[<span class="nm">0</span>], max = tomb[<span class="nm">0</span>];
+            <span class="kw">foreach</span> (<span class="kw">int</span> x <span class="kw">in</span> tomb)
+            {
+                <span class="kw">if</span> (x &lt; min) min = x;
+                <span class="kw">if</span> (x &gt; max) max = x;
+            }
+
+            <span class="fn">Kiir</span>(min, max);
+        }
+    }
+}</pre>
+        </div>
+        <div class="editor-zone">
+          <div class="editor-toolbar">
+            <div class="editor-label-group">
+              <span class="editor-badge">✏ SZERKESZTHETŐ</span>
+              <span class="editor-lang-tag">C# · JDoodle API · online futtatás</span>
+            </div>
+            <button class="run-btn" onclick="runCode(this)">▶ Futtatás</button>
+          </div>
+          <textarea class="code-editor" id="code-08" spellcheck="false"></textarea>
+          <div class="stdin-row">
+            <span class="stdin-label">⌨ BEMENET<br><span style="font-size:.6rem;font-weight:400;color:var(--muted)">itt szerkeszthető</span></span>
+            <textarea class="stdin-input" id="stdin-08" spellcheck="false"></textarea>
+          </div>
+          <div class="console-out" id="out-08">
+            <div class="console-header">
+              <div class="console-header-left">
+                <div class="console-status-dot" id="dot-08"></div>
+                <span class="console-title">KONZOL KIMENET</span>
+              </div>
+              <button class="clear-btn" onclick="clearOut('08')">✕ Töröl</button>
+            </div>
+            <pre class="console-content" id="console-08"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- #09 -->
+    <div class="task">
+      <div class="task-header" onclick="toggle(this)">
+        <span class="task-num">#09</span>
+        <div class="task-info">
+          <div class="task-title">Név + nem alapján köszöntés</div>
+          <div class="task-desc">Elfogadja: nő/Nő/NŐ ill. férfi/Férfi/FÉRFI alakokat. (Dolgozat)</div>
+        </div>
+        <span class="task-toggle">▼</span>
+      </div>
+      <div class="task-body">
+        <div class="code-wrap">
+          <div class="code-label"><span class="code-lang">C# · KONZOL</span><button class="copy-btn" onclick="copyCode(this)">Másolás</button></div>
+<pre><span class="kw">using</span> System;
+
+<span class="kw">namespace</span> NevNemKoszonto
+{
+    <span class="kw">class</span> <span class="tp">Program</span>
+    {
+        <span class="kw">static void</span> <span class="fn">Main</span>(<span class="kw">string</span>[] args)
+        {
+            Console.<span class="fn">Write</span>(<span class="str">"Neve: "</span>);
+            <span class="kw">string</span> nev = Console.<span class="fn">ReadLine</span>().<span class="fn">Trim</span>();
+
+            Console.<span class="fn">Write</span>(<span class="str">"Neme (nő / férfi): "</span>);
+            <span class="kw">string</span> nem = Console.<span class="fn">ReadLine</span>().<span class="fn">Trim</span>().<span class="fn">ToLower</span>();
+
+            <span class="kw">if</span> (nem == <span class="str">"nő"</span>)
+                Console.<span class="fn">WriteLine</span>(<span class="str">$"Üdvözlöm, {nev} kisasszony/asszony!"</span>);
+            <span class="kw">else if</span> (nem == <span class="str">"férfi"</span>)
+                Console.<span class="fn">WriteLine</span>(<span class="str">$"Üdvözlöm, {nev} úr!"</span>);
+            <span class="kw">else</span>
+                Console.<span class="fn">WriteLine</span>(<span class="str">"Érvénytelen nem. Adjon meg 'nő' vagy 'férfi' értéket."</span>);
+        }
+    }
+}</pre>
+        </div>
+        <div class="editor-zone">
+          <div class="editor-toolbar">
+            <div class="editor-label-group">
+              <span class="editor-badge">✏ SZERKESZTHETŐ</span>
+              <span class="editor-lang-tag">C# · JDoodle API · online futtatás</span>
+            </div>
+            <button class="run-btn" onclick="runCode(this)">▶ Futtatás</button>
+          </div>
+          <textarea class="code-editor" id="code-09" spellcheck="false"></textarea>
+          <div class="stdin-row">
+            <span class="stdin-label">⌨ BEMENET<br><span style="font-size:.6rem;font-weight:400;color:var(--muted)">itt szerkeszthető</span></span>
+            <textarea class="stdin-input" id="stdin-09" spellcheck="false"></textarea>
+          </div>
+          <div class="console-out" id="out-09">
+            <div class="console-header">
+              <div class="console-header-left">
+                <div class="console-status-dot" id="dot-09"></div>
+                <span class="console-title">KONZOL KIMENET</span>
+              </div>
+              <button class="clear-btn" onclick="clearOut('09')">✕ Töröl</button>
+            </div>
+            <pre class="console-content" id="console-09"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- #10 -->
+    <div class="task">
+      <div class="task-header" onclick="toggle(this)">
+        <span class="task-num">#10</span>
+        <div class="task-info">
+          <div class="task-title">Forint címletező</div>
+          <div class="task-desc">Csak pozitív, 5-tel osztható összeget fogad el. Mindig a lehető legnagyobb forint-címletet adja ki. (Dolgozat)</div>
+        </div>
+        <span class="task-toggle">▼</span>
+      </div>
+      <div class="task-body">
+        <div class="code-wrap">
+          <div class="code-label"><span class="code-lang">C# · KONZOL</span><button class="copy-btn" onclick="copyCode(this)">Másolás</button></div>
+<pre><span class="kw">using</span> System;
+
+<span class="kw">namespace</span> Cimletező
+{
+    <span class="kw">class</span> <span class="tp">Program</span>
+    {
+        <span class="kw">static void</span> <span class="fn">Main</span>(<span class="kw">string</span>[] args)
+        {
+            <span class="kw">int</span>[] cimletek = { <span class="nm">20000</span>, <span class="nm">10000</span>, <span class="nm">5000</span>, <span class="nm">2000</span>, <span class="nm">1000</span>,
+                               <span class="nm">500</span>, <span class="nm">200</span>, <span class="nm">100</span>, <span class="nm">50</span>, <span class="nm">20</span>, <span class="nm">10</span>, <span class="nm">5</span> };
+
+            Console.<span class="fn">Write</span>(<span class="str">"Összeg (Ft): "</span>);
+            <span class="kw">string</span> input = Console.<span class="fn">ReadLine</span>();
+
+            <span class="kw">if</span> (!<span class="tp">int</span>.<span class="fn">TryParse</span>(input, <span class="kw">out int</span> osszeg) || osszeg &lt;= <span class="nm">0</span> || osszeg % <span class="nm">5</span> != <span class="nm">0</span>)
+            {
+                Console.<span class="fn">WriteLine</span>(<span class="str">"Érvénytelen! Pozitív, 5-tel osztható egész szám kell."</span>);
+                <span class="kw">return</span>;
+            }
+
+            Console.<span class="fn">Write</span>(<span class="str">$"{osszeg} Ft = "</span>);
+            <span class="kw">int</span> maradek = osszeg;
+            <span class="kw">bool</span> elso = <span class="kw">true</span>;
+
+            <span class="kw">foreach</span> (<span class="kw">int</span> cimlet <span class="kw">in</span> cimletek)
+            {
+                <span class="kw">int</span> db = maradek / cimlet;
+                <span class="kw">if</span> (db &gt; <span class="nm">0</span>)
+                {
+                    <span class="kw">if</span> (!elso) Console.<span class="fn">Write</span>(<span class="str">" + "</span>);
+                    Console.<span class="fn">Write</span>(<span class="str">$"{db}×{cimlet}"</span>);
+                    maradek -= db * cimlet;
+                    elso = <span class="kw">false</span>;
+                }
+            }
+            Console.<span class="fn">WriteLine</span>(<span class="str">" Ft"</span>);
+        }
+    }
+}</pre>
+        </div>
+        <div class="editor-zone">
+          <div class="editor-toolbar">
+            <div class="editor-label-group">
+              <span class="editor-badge">✏ SZERKESZTHETŐ</span>
+              <span class="editor-lang-tag">C# · JDoodle API · online futtatás</span>
+            </div>
+            <button class="run-btn" onclick="runCode(this)">▶ Futtatás</button>
+          </div>
+          <textarea class="code-editor" id="code-10" spellcheck="false"></textarea>
+          <div class="stdin-row">
+            <span class="stdin-label">⌨ BEMENET<br><span style="font-size:.6rem;font-weight:400;color:var(--muted)">itt szerkeszthető</span></span>
+            <textarea class="stdin-input" id="stdin-10" spellcheck="false"></textarea>
+          </div>
+          <div class="console-out" id="out-10">
+            <div class="console-header">
+              <div class="console-header-left">
+                <div class="console-status-dot" id="dot-10"></div>
+                <span class="console-title">KONZOL KIMENET</span>
+              </div>
+              <button class="clear-btn" onclick="clearOut('10')">✕ Töröl</button>
+            </div>
+            <pre class="console-content" id="console-10"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- #11 -->
+    <div class="task">
+      <div class="task-header" onclick="toggle(this)">
+        <span class="task-num">#11</span>
+        <div class="task-info">
+          <div class="task-title">Prímszám vagy összetett szám?</div>
+          <div class="task-desc">Pozitív egész számról eldöntjük, prím (törzsszám) vagy összetett-e. (Dolgozat)</div>
+        </div>
+        <span class="task-toggle">▼</span>
+      </div>
+      <div class="task-body">
+        <div class="code-wrap">
+          <div class="code-label"><span class="code-lang">C# · KONZOL</span><button class="copy-btn" onclick="copyCode(this)">Másolás</button></div>
+<pre><span class="kw">using</span> System;
+
+<span class="kw">namespace</span> PrimSzam
+{
+    <span class="kw">class</span> <span class="tp">Program</span>
+    {
+        <span class="kw">static bool</span> <span class="fn">IsPrim</span>(<span class="kw">int</span> n)
+        {
+            <span class="kw">if</span> (n &lt; <span class="nm">2</span>) <span class="kw">return false</span>;
+            <span class="kw">if</span> (n == <span class="nm">2</span>) <span class="kw">return true</span>;
+            <span class="kw">if</span> (n % <span class="nm">2</span> == <span class="nm">0</span>) <span class="kw">return false</span>;
+            <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">3</span>; i * i &lt;= n; i += <span class="nm">2</span>)
+                <span class="kw">if</span> (n % i == <span class="nm">0</span>) <span class="kw">return false</span>;
+            <span class="kw">return true</span>;
+        }
+
+        <span class="kw">static void</span> <span class="fn">Main</span>(<span class="kw">string</span>[] args)
+        {
+            Console.<span class="fn">Write</span>(<span class="str">"Adjon meg egy pozitív egész számot: "</span>);
+            <span class="kw">int</span> n = <span class="tp">int</span>.<span class="fn">Parse</span>(Console.<span class="fn">ReadLine</span>());
+
+            <span class="kw">if</span> (n &lt; <span class="nm">1</span>) { Console.<span class="fn">WriteLine</span>(<span class="str">"A szám nem pozitív."</span>); <span class="kw">return</span>; }
+
+            <span class="kw">if</span> (<span class="fn">IsPrim</span>(n))
+                Console.<span class="fn">WriteLine</span>(<span class="str">$"{n} prímszám (törzsszám)."</span>);
+            <span class="kw">else</span>
+                Console.<span class="fn">WriteLine</span>(<span class="str">$"{n} összetett szám."</span>);
+        }
+    }
+}</pre>
+        </div>
+        <div class="editor-zone">
+          <div class="editor-toolbar">
+            <div class="editor-label-group">
+              <span class="editor-badge">✏ SZERKESZTHETŐ</span>
+              <span class="editor-lang-tag">C# · JDoodle API · online futtatás</span>
+            </div>
+            <button class="run-btn" onclick="runCode(this)">▶ Futtatás</button>
+          </div>
+          <textarea class="code-editor" id="code-11" spellcheck="false"></textarea>
+          <div class="stdin-row">
+            <span class="stdin-label">⌨ BEMENET<br><span style="font-size:.6rem;font-weight:400;color:var(--muted)">itt szerkeszthető</span></span>
+            <textarea class="stdin-input" id="stdin-11" spellcheck="false"></textarea>
+          </div>
+          <div class="console-out" id="out-11">
+            <div class="console-header">
+              <div class="console-header-left">
+                <div class="console-status-dot" id="dot-11"></div>
+                <span class="console-title">KONZOL KIMENET</span>
+              </div>
+              <button class="clear-btn" onclick="clearOut('11')">✕ Töröl</button>
+            </div>
+            <pre class="console-content" id="console-11"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ═══════════════ WINFORMS ═══════════════ -->
+  <section class="section" id="winforms">
+    <div class="section-header">
+      <span class="section-badge winforms">WINFORMS</span>
+      <h2>WinForms feladatok</h2>
+    </div>
+
+    <!-- #12 -->
+    <div class="task">
+      <div class="task-header" onclick="toggle(this)">
+        <span class="task-num">#12</span>
+        <div class="task-info">
+          <div class="task-title">Tömb-tételek GUI alkalmazás</div>
+          <div class="task-desc">N-elemű tömb generálása [-N; 3N] között. ComboBox: Eldöntés / Kiválasztás / Összegzés / Egyszerű cserés rendezés. (feladat.txt)</div>
+        </div>
+        <span class="task-toggle">▼</span>
+      </div>
+      <div class="task-body">
+        <div class="code-wrap">
+          <div class="code-label"><span class="code-lang">C# · WINFORMS · Form1.cs</span><button class="copy-btn" onclick="copyCode(this)">Másolás</button></div>
+<pre><span class="kw">using</span> System;
+<span class="kw">using</span> System.Drawing;
+<span class="kw">using</span> System.Windows.Forms;
+
+<span class="kw">namespace</span> TombFeladatok
+{
+    <span class="kw">public partial class</span> <span class="tp">Form1</span> : <span class="tp">Form</span>
+    {
+        <span class="kw">private int</span>    n;
+        <span class="kw">private int</span>[]  tomb;
+        <span class="kw">private</span> <span class="tp">Random</span> rnd = <span class="kw">new</span> <span class="tp">Random</span>();
+
+        <span class="cm">/* DESIGNER VEZÉRLŐK:
+           NumericUpDown nudN  (1–20, érték: 5)
+           Button btnGenerál
+           ComboBox cboFeladat  (Items: l.lent)
+           NumericUpDown nudInput  (határok futáskor frissülnek)
+           Button btnVégrehajt
+           ListBox lstRendezetlen, lstRendezett
+           Label lblEredmény                        */</span>
+
+        <span class="kw">public</span> <span class="fn">Form1</span>()
+        {
+            <span class="fn">InitializeComponent</span>();
+            cboFeladat.Items.<span class="fn">AddRange</span>(<span class="kw">new object</span>[]
+            {
+                <span class="str">"Eldöntés tétele"</span>, <span class="str">"Kiválasztás tétele"</span>,
+                <span class="str">"Összegzés tétele"</span>, <span class="str">"Egyszerű cserés rendezés"</span>
+            });
+            cboFeladat.SelectedIndex = <span class="nm">0</span>;
+        }
+
+        <span class="kw">private void</span> <span class="fn">btnGenerál_Click</span>(<span class="kw">object</span> sender, <span class="tp">EventArgs</span> e)
+        {
+            n    = (<span class="kw">int</span>)nudN.Value;
+            tomb = <span class="kw">new int</span>[n];
+            <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i &lt; n; i++)
+                tomb[i] = rnd.<span class="fn">Next</span>(-n, <span class="nm">3</span> * n + <span class="nm">1</span>);
+            nudInput.Minimum = -n; nudInput.Maximum = <span class="nm">3</span> * n;
+            lblEredmény.Text = <span class="str">$"Tömb generálva ({n} elem)"</span>;
+        }
+
+        <span class="kw">private void</span> <span class="fn">btnVégrehajt_Click</span>(<span class="kw">object</span> sender, <span class="tp">EventArgs</span> e)
+        {
+            <span class="kw">switch</span> (cboFeladat.SelectedIndex)
+            {
+                <span class="kw">case</span> <span class="nm">0</span>: <span class="fn">Eldöntes</span>();  <span class="kw">break</span>;
+                <span class="kw">case</span> <span class="nm">1</span>: <span class="fn">Kivalasztas</span>(); <span class="kw">break</span>;
+                <span class="kw">case</span> <span class="nm">2</span>: <span class="fn">Osszegzes</span>(); <span class="kw">break</span>;
+                <span class="kw">case</span> <span class="nm">3</span>: <span class="fn">CseresRendezes</span>(); <span class="kw">break</span>;
+            }
+        }
+
+        <span class="kw">private void</span> <span class="fn">Eldöntes</span>()
+        {
+            <span class="kw">int</span> ker = (<span class="kw">int</span>)nudInput.Value; <span class="kw">bool</span> t = <span class="kw">false</span>;
+            <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i &lt; n &amp;&amp; !t; i++) <span class="kw">if</span> (tomb[i] == ker) t = <span class="kw">true</span>;
+            MessageBox.<span class="fn">Show</span>(t ? <span class="str">$"{ker} megtalálható."</span> : <span class="str">$"{ker} nincs a tömbben."</span>);
+        }
+
+        <span class="kw">private void</span> <span class="fn">Kivalasztas</span>()
+        {
+            <span class="kw">int</span> ker = (<span class="kw">int</span>)nudInput.Value; <span class="kw">bool</span> t = <span class="kw">false</span>; <span class="kw">int</span> idx = -<span class="nm">1</span>;
+            <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i &lt; n &amp;&amp; !t; i++) <span class="kw">if</span> (tomb[i] == ker) { t = <span class="kw">true</span>; idx = i; }
+            lblEredmény.Text = t ? <span class="str">$"{ker} indexe: {idx}"</span> : <span class="str">$"{ker} nincs a tömbben."</span>;
+        }
+
+        <span class="kw">private void</span> <span class="fn">Osszegzes</span>()
+        {
+            <span class="kw">long</span> s = <span class="nm">0</span>; <span class="kw">foreach</span> (<span class="kw">int</span> x <span class="kw">in</span> tomb) s += x;
+            lblEredmény.Text = <span class="str">$"Összeg: {s}"</span>;
+        }
+
+        <span class="kw">private void</span> <span class="fn">CseresRendezes</span>()
+        {
+            lstRendezetlen.Items.<span class="fn">Clear</span>();
+            <span class="kw">foreach</span> (<span class="kw">int</span> x <span class="kw">in</span> tomb) lstRendezetlen.Items.<span class="fn">Add</span>(x);
+            <span class="kw">int</span>[] r = (<span class="kw">int</span>[])tomb.<span class="fn">Clone</span>();
+            <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i &lt; r.Length - <span class="nm">1</span>; i++)
+                <span class="kw">for</span> (<span class="kw">int</span> j = i + <span class="nm">1</span>; j &lt; r.Length; j++)
+                    <span class="kw">if</span> (r[i] &gt; r[j]) { <span class="kw">int</span> tmp = r[i]; r[i] = r[j]; r[j] = tmp; }
+            lstRendezett.Items.<span class="fn">Clear</span>();
+            <span class="kw">foreach</span> (<span class="kw">int</span> x <span class="kw">in</span> r) lstRendezett.Items.<span class="fn">Add</span>(x);
+            lblEredmény.Text = <span class="str">"Rendezés kész."</span>;
+        }
+    }
+}</pre>
+        </div>
+        <div class="winforms-note">
+          <span class="winforms-note-icon">⚠</span>
+          <span class="winforms-note-text"><strong>WinForms GUI</strong> – az eredeti kód Visual Studio + Windows környezetet igényel. Az alábbi konzol-demonstráció ugyanazt az algoritmust futtatja JDoodle API-n keresztül.</span>
+        </div>
+        <div class="demo-divider"><span>▶ KONZOL DEMONSTRÁCIÓ</span></div>
+        <div class="editor-zone">
+          <div class="editor-toolbar">
+            <div class="editor-label-group">
+              <span class="editor-badge winforms-badge">✏ KONZOL DEMO</span>
+              <span class="editor-lang-tag">azonos algoritmus · futtatható online</span>
+            </div>
+            <button class="run-btn" onclick="runCode(this)">▶ Futtatás</button>
+          </div>
+          <textarea class="code-editor" id="code-12" spellcheck="false"></textarea>
+          <div class="stdin-row">
+            <span class="stdin-label">⌨ BEMENET<br><span style="font-size:.6rem;font-weight:400;color:var(--muted)">itt szerkeszthető</span></span>
+            <textarea class="stdin-input" id="stdin-12" spellcheck="false"></textarea>
+          </div>
+          <div class="console-out" id="out-12">
+            <div class="console-header">
+              <div class="console-header-left">
+                <div class="console-status-dot" id="dot-12"></div>
+                <span class="console-title">KONZOL KIMENET</span>
+              </div>
+              <button class="clear-btn" onclick="clearOut('12')">✕ Töröl</button>
+            </div>
+            <pre class="console-content" id="console-12"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- #13 -->
+    <div class="task">
+      <div class="task-header" onclick="toggle(this)">
+        <span class="task-num">#13</span>
+        <div class="task-info">
+          <div class="task-title">Könyvek – DataGridView megjelenítés</div>
+          <div class="task-desc">konyv.txt beolvasása Konyv osztályba, DataGridView-ban csak-olvasható módon megjelenítve. (konyvek_feladat)</div>
+        </div>
+        <span class="task-toggle">▼</span>
+      </div>
+      <div class="task-body">
+        <div class="code-wrap">
+          <div class="code-label"><span class="code-lang">C# · WINFORMS · Form1.cs</span><button class="copy-btn" onclick="copyCode(this)">Másolás</button></div>
+<pre><span class="kw">using</span> System;
+<span class="kw">using</span> System.Collections.Generic;
+<span class="kw">using</span> System.IO;
+<span class="kw">using</span> System.Windows.Forms;
+
+<span class="kw">namespace</span> Konyvek
+{
+    <span class="kw">class</span> <span class="tp">Konyv</span>
+    {
+        <span class="kw">public int</span>    Sorszam { <span class="kw">get</span>; <span class="kw">set</span>; }
+        <span class="kw">public string</span> Szerzo  { <span class="kw">get</span>; <span class="kw">set</span>; }
+        <span class="kw">public string</span> Cim     { <span class="kw">get</span>; <span class="kw">set</span>; }
+        <span class="kw">public int</span>    Ev      { <span class="kw">get</span>; <span class="kw">set</span>; }
+        <span class="kw">public string</span> ISBN    { <span class="kw">get</span>; <span class="kw">set</span>; }
+
+        <span class="kw">public</span> <span class="fn">Konyv</span>(<span class="kw">int</span> s, <span class="kw">string</span> sz, <span class="kw">string</span> c, <span class="kw">int</span> e, <span class="kw">string</span> i)
+        { Sorszam=s; Szerzo=sz; Cim=c; Ev=e; ISBN=i; }
+    }
+
+    <span class="kw">public partial class</span> <span class="tp">Form1</span> : <span class="tp">Form</span>
+    {
+        <span class="kw">private</span> <span class="tp">List</span>&lt;<span class="tp">Konyv</span>&gt; Konyvek = <span class="kw">new</span> <span class="tp">List</span>&lt;<span class="tp">Konyv</span>&gt;();
+
+        <span class="cm">/* DESIGNER: DataGridView dgv (Dock=Fill, AutoSizeColumnsMode=Fill, ReadOnly=true)  */</span>
+
+        <span class="kw">public</span> <span class="fn">Form1</span>() { <span class="fn">InitializeComponent</span>(); <span class="fn">BetöltKönyvek</span>(); <span class="fn">FeltöltGrid</span>(); }
+
+        <span class="kw">private void</span> <span class="fn">BetöltKönyvek</span>()
+        {
+            <span class="kw">foreach</span> (<span class="kw">string</span> sor <span class="kw">in</span> File.<span class="fn">ReadAllLines</span>(<span class="str">"konyv.txt"</span>, System.Text.Encoding.UTF8))
+            {
+                <span class="kw">if</span> (sor.<span class="fn">StartsWith</span>(<span class="str">"#"</span>)) <span class="kw">continue</span>;
+                <span class="kw">string</span>[] r = sor.<span class="fn">Split</span>(<span class="str">','</span>);
+                <span class="kw">if</span> (r.Length &lt; <span class="nm">5</span>) <span class="kw">continue</span>;
+                Konyvek.<span class="fn">Add</span>(<span class="kw">new</span> <span class="tp">Konyv</span>(<span class="tp">int</span>.<span class="fn">Parse</span>(r[<span class="nm">0</span>].Trim()), r[<span class="nm">1</span>].Trim(),
+                                       r[<span class="nm">2</span>].Trim(), <span class="tp">int</span>.<span class="fn">Parse</span>(r[<span class="nm">3</span>].Trim()), r[<span class="nm">4</span>].Trim()));
+            }
+        }
+
+        <span class="kw">private void</span> <span class="fn">FeltöltGrid</span>()
+        {
+            dgv.AutoGenerateColumns = <span class="kw">false</span>; dgv.Columns.<span class="fn">Clear</span>();
+            <span class="fn">OszlopAdd</span>(<span class="str">"Sorszam"</span>,<span class="str">"#"</span>,<span class="nm">40</span>); <span class="fn">OszlopAdd</span>(<span class="str">"Szerzo"</span>,<span class="str">"Szerző"</span>,<span class="nm">200</span>);
+            <span class="fn">OszlopAdd</span>(<span class="str">"Cim"</span>,<span class="str">"Cím"</span>,<span class="nm">250</span>); <span class="fn">OszlopAdd</span>(<span class="str">"Ev"</span>,<span class="str">"Év"</span>,<span class="nm">60</span>);
+            <span class="fn">OszlopAdd</span>(<span class="str">"ISBN"</span>,<span class="str">"ISBN"</span>,<span class="nm">120</span>);
+            dgv.DataSource = Konyvek;
+            dgv.ReadOnly = <span class="kw">true</span>; dgv.AllowUserToAddRows = <span class="kw">false</span>;
+            dgv.AllowUserToDeleteRows = <span class="kw">false</span>; dgv.AllowUserToOrderColumns = <span class="kw">false</span>;
+        }
+
+        <span class="kw">private void</span> <span class="fn">OszlopAdd</span>(<span class="kw">string</span> prop, <span class="kw">string</span> fejlec, <span class="kw">int</span> sz)
+        {
+            dgv.Columns.<span class="fn">Add</span>(<span class="kw">new</span> <span class="tp">DataGridViewTextBoxColumn</span>
+                { DataPropertyName=prop, HeaderText=fejlec, Width=sz });
+        }
+    }
+}</pre>
+        </div>
+        <div class="winforms-note">
+          <span class="winforms-note-icon">⚠</span>
+          <span class="winforms-note-text"><strong>WinForms GUI</strong> – az eredeti kód Visual Studio + Windows környezetet igényel. Az alábbi konzol-demonstráció a konyv.txt adataival dolgozik beégetett adatokkal.</span>
+        </div>
+        <div class="demo-divider"><span>▶ KONZOL DEMONSTRÁCIÓ</span></div>
+        <div class="editor-zone">
+          <div class="editor-toolbar">
+            <div class="editor-label-group">
+              <span class="editor-badge winforms-badge">✏ KONZOL DEMO</span>
+              <span class="editor-lang-tag">azonos logika · futtatható online</span>
+            </div>
+            <button class="run-btn" onclick="runCode(this)">▶ Futtatás</button>
+          </div>
+          <textarea class="code-editor" id="code-13" spellcheck="false"></textarea>
+          <div class="console-out" id="out-13">
+            <div class="console-header">
+              <div class="console-header-left">
+                <div class="console-status-dot" id="dot-13"></div>
+                <span class="console-title">KONZOL KIMENET</span>
+              </div>
+              <button class="clear-btn" onclick="clearOut('13')">✕ Töröl</button>
+            </div>
+            <pre class="console-content" id="console-13"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- #14 -->
+    <div class="task">
+      <div class="task-header" onclick="toggle(this)">
+        <span class="task-num">#14</span>
+        <div class="task-info">
+          <div class="task-title">Telefonregiszter</div>
+          <div class="task-desc">Beolvasás fájlból, névlista, kiválasztott személy adatai, Váciak szűrése, Telekom (+3630) előfizetők listája. (telefonregiszter_feladat)</div>
+        </div>
+        <span class="task-toggle">▼</span>
+      </div>
+      <div class="task-body">
+        <div class="code-wrap">
+          <div class="code-label"><span class="code-lang">C# · WINFORMS · Form1.cs</span><button class="copy-btn" onclick="copyCode(this)">Másolás</button></div>
+<pre><span class="kw">using</span> System;
+<span class="kw">using</span> System.Collections.Generic;
+<span class="kw">using</span> System.IO;
+<span class="kw">using</span> System.Linq;
+<span class="kw">using</span> System.Windows.Forms;
+
+<span class="kw">namespace</span> Telefonregiszter
+{
+    <span class="kw">class</span> <span class="tp">Regiszter</span>
+    {
+        <span class="kw">public int</span>    Id        { <span class="kw">get</span>; <span class="kw">set</span>; }
+        <span class="kw">public string</span> Nev       { <span class="kw">get</span>; <span class="kw">set</span>; }
+        <span class="kw">public int</span>    Irszam    { <span class="kw">get</span>; <span class="kw">set</span>; }
+        <span class="kw">public string</span> Telepules { <span class="kw">get</span>; <span class="kw">set</span>; }
+        <span class="kw">public string</span> Telefon   { <span class="kw">get</span>; <span class="kw">set</span>; }
+    }
+
+    <span class="kw">public partial class</span> <span class="tp">Form1</span> : <span class="tp">Form</span>
+    {
+        <span class="kw">private</span> <span class="tp">List</span>&lt;<span class="tp">Regiszter</span>&gt; lista = <span class="kw">new</span> <span class="tp">List</span>&lt;<span class="tp">Regiszter</span>&gt;();
+
+        <span class="cm">/* DESIGNER: ListBox lstNevek, Label lblAdatok,
+           Button btnVaciak, Button btnTelekom, ListBox lstSzurt */</span>
+
+        <span class="kw">public</span> <span class="fn">Form1</span>() { <span class="fn">InitializeComponent</span>(); <span class="fn">BetöltAdatok</span>(); <span class="fn">FeltöltNévlista</span>(); }
+
+        <span class="kw">private void</span> <span class="fn">BetöltAdatok</span>()
+        {
+            <span class="kw">bool</span> elso = <span class="kw">true</span>;
+            <span class="kw">foreach</span> (<span class="kw">string</span> sor <span class="kw">in</span> File.<span class="fn">ReadAllLines</span>(<span class="str">"telefonregiszter.txt"</span>, System.Text.Encoding.UTF8))
+            {
+                <span class="kw">if</span> (elso) { elso = <span class="kw">false</span>; <span class="kw">continue</span>; }
+                <span class="kw">string</span>[] r = sor.<span class="fn">Split</span>(<span class="str">';'</span>);
+                <span class="kw">if</span> (r.Length &lt; <span class="nm">5</span>) <span class="kw">continue</span>;
+                lista.<span class="fn">Add</span>(<span class="kw">new</span> <span class="tp">Regiszter</span> {
+                    Id=<span class="tp">int</span>.<span class="fn">Parse</span>(r[<span class="nm">0</span>]), Nev=r[<span class="nm">1</span>], Irszam=<span class="tp">int</span>.<span class="fn">Parse</span>(r[<span class="nm">2</span>]),
+                    Telepules=r[<span class="nm">3</span>], Telefon=r[<span class="nm">4</span>] });
+            }
+        }
+
+        <span class="kw">private void</span> <span class="fn">FeltöltNévlista</span>()
+        { <span class="kw">foreach</span> (<span class="kw">var</span> r <span class="kw">in</span> lista) lstNevek.Items.<span class="fn">Add</span>(r.Nev); }
+
+        <span class="kw">private void</span> <span class="fn">lstNevek_SelectedIndexChanged</span>(<span class="kw">object</span> s, <span class="tp">EventArgs</span> e)
+        {
+            <span class="kw">if</span> (lstNevek.SelectedIndex &lt; <span class="nm">0</span>) <span class="kw">return</span>;
+            <span class="tp">Regiszter</span> r = lista[lstNevek.SelectedIndex];
+            lblAdatok.Text = <span class="str">$"Név: {r.Nev}\nIrsz.: {r.Irszam}  Telep.: {r.Telepules}\nTelefon: {r.Telefon}"</span>;
+        }
+
+        <span class="kw">private void</span> <span class="fn">btnVaciak_Click</span>(<span class="kw">object</span> s, <span class="tp">EventArgs</span> e)
+        {
+            lstSzurt.Items.<span class="fn">Clear</span>();
+            <span class="kw">foreach</span> (<span class="kw">var</span> r <span class="kw">in</span> lista.<span class="fn">Where</span>(x =&gt; x.Telepules == <span class="str">"Vác"</span>))
+                lstSzurt.Items.<span class="fn">Add</span>(r.Nev);
+        }
+
+        <span class="kw">private void</span> <span class="fn">btnTelekom_Click</span>(<span class="kw">object</span> s, <span class="tp">EventArgs</span> e)
+        {
+            lstSzurt.Items.<span class="fn">Clear</span>();
+            <span class="kw">foreach</span> (<span class="kw">var</span> r <span class="kw">in</span> lista.<span class="fn">Where</span>(x =&gt; x.Telefon.<span class="fn">StartsWith</span>(<span class="str">"+3630"</span>)))
+                lstSzurt.Items.<span class="fn">Add</span>(<span class="str">$"{r.Nev}  –  {r.Telefon}"</span>);
+        }
+    }
+}</pre>
+        </div>
+        <div class="winforms-note">
+          <span class="winforms-note-icon">⚠</span>
+          <span class="winforms-note-text"><strong>WinForms GUI</strong> – az eredeti kód Visual Studio + Windows környezetet igényel. A konzol demo a telefonregiszter.txt összes lekérdezését mutatja be beégetett adatokkal.</span>
+        </div>
+        <div class="demo-divider"><span>▶ KONZOL DEMONSTRÁCIÓ</span></div>
+        <div class="editor-zone">
+          <div class="editor-toolbar">
+            <div class="editor-label-group">
+              <span class="editor-badge winforms-badge">✏ KONZOL DEMO</span>
+              <span class="editor-lang-tag">névlista · Váciak · Telekom szűrés</span>
+            </div>
+            <button class="run-btn" onclick="runCode(this)">▶ Futtatás</button>
+          </div>
+          <textarea class="code-editor" id="code-14" spellcheck="false"></textarea>
+          <div class="console-out" id="out-14">
+            <div class="console-header">
+              <div class="console-header-left">
+                <div class="console-status-dot" id="dot-14"></div>
+                <span class="console-title">KONZOL KIMENET</span>
+              </div>
+              <button class="clear-btn" onclick="clearOut('14')">✕ Töröl</button>
+            </div>
+            <pre class="console-content" id="console-14"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- #15 -->
+    <div class="task">
+      <div class="task-header" onclick="toggle(this)">
+        <span class="task-num">#15</span>
+        <div class="task-info">
+          <div class="task-title">Ablak a képernyő négy sarkába ugrik</div>
+          <div class="task-desc">4 gomb: Bal-felső, Jobb-felső, Bal-alsó, Jobb-alsó – Screen.PrimaryScreen.Bounds alapján. (WinForm Designer #2)</div>
+        </div>
+        <span class="task-toggle">▼</span>
+      </div>
+      <div class="task-body">
+        <div class="code-wrap">
+          <div class="code-label"><span class="code-lang">C# · WINFORMS · Form1.cs</span><button class="copy-btn" onclick="copyCode(this)">Másolás</button></div>
+<pre><span class="kw">using</span> System;
+<span class="kw">using</span> System.Drawing;
+<span class="kw">using</span> System.Windows.Forms;
+
+<span class="kw">namespace</span> SarkokraUgrik
+{
+    <span class="kw">public partial class</span> <span class="tp">Form1</span> : <span class="tp">Form</span>
+    {
+        <span class="cm">/* DESIGNER: 4 Button vezérlő
+           btnBalFelso "↖ Bal felső"   btnJobbFelso "↗ Jobb felső"
+           btnBalAlso  "↙ Bal alsó"    btnJobbAlso  "↘ Jobb alsó"  */</span>
+
+        <span class="kw">public</span> <span class="fn">Form1</span>() =&gt; <span class="fn">InitializeComponent</span>();
+
+        <span class="kw">private void</span> <span class="fn">btnBalFelso_Click</span>(<span class="kw">object</span> sender, <span class="tp">EventArgs</span> e)
+            =&gt; Location = <span class="kw">new</span> <span class="tp">Point</span>(<span class="nm">0</span>, <span class="nm">0</span>);
+
+        <span class="kw">private void</span> <span class="fn">btnJobbFelso_Click</span>(<span class="kw">object</span> sender, <span class="tp">EventArgs</span> e)
+        {
+            <span class="tp">Rectangle</span> k = <span class="tp">Screen</span>.PrimaryScreen.Bounds;
+            Location = <span class="kw">new</span> <span class="tp">Point</span>(k.Width - Width, <span class="nm">0</span>);
+        }
+
+        <span class="kw">private void</span> <span class="fn">btnBalAlso_Click</span>(<span class="kw">object</span> sender, <span class="tp">EventArgs</span> e)
+        {
+            <span class="tp">Rectangle</span> k = <span class="tp">Screen</span>.PrimaryScreen.Bounds;
+            Location = <span class="kw">new</span> <span class="tp">Point</span>(<span class="nm">0</span>, k.Height - Height);
+        }
+
+        <span class="kw">private void</span> <span class="fn">btnJobbAlso_Click</span>(<span class="kw">object</span> sender, <span class="tp">EventArgs</span> e)
+        {
+            <span class="tp">Rectangle</span> k = <span class="tp">Screen</span>.PrimaryScreen.Bounds;
+            Location = <span class="kw">new</span> <span class="tp">Point</span>(k.Width - Width, k.Height - Height);
+        }
+    }
+}</pre>
+        </div>
+        <div class="winforms-note">
+          <span class="winforms-note-icon">⚠</span>
+          <span class="winforms-note-text"><strong>WinForms GUI</strong> – az eredeti kód Visual Studio + Windows környezetet igényel. A konzol demo kiszámolja az összes sarokpont koordinátát egy megadott képernyőméret alapján.</span>
+        </div>
+        <div class="demo-divider"><span>▶ KONZOL DEMONSTRÁCIÓ</span></div>
+        <div class="editor-zone">
+          <div class="editor-toolbar">
+            <div class="editor-label-group">
+              <span class="editor-badge winforms-badge">✏ KONZOL DEMO</span>
+              <span class="editor-lang-tag">sarokkoordináta-számítás · futtatható online</span>
+            </div>
+            <button class="run-btn" onclick="runCode(this)">▶ Futtatás</button>
+          </div>
+          <textarea class="code-editor" id="code-15" spellcheck="false"></textarea>
+          <div class="stdin-row">
+            <span class="stdin-label">⌨ BEMENET<br><span style="font-size:.6rem;font-weight:400;color:var(--muted)">itt szerkeszthető</span></span>
+            <textarea class="stdin-input" id="stdin-15" spellcheck="false"></textarea>
+          </div>
+          <div class="console-out" id="out-15">
+            <div class="console-header">
+              <div class="console-header-left">
+                <div class="console-status-dot" id="dot-15"></div>
+                <span class="console-title">KONZOL KIMENET</span>
+              </div>
+              <button class="clear-btn" onclick="clearOut('15')">✕ Töröl</button>
+            </div>
+            <pre class="console-content" id="console-15"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- #16 -->
+    <div class="task">
+      <div class="task-header" onclick="toggle(this)">
+        <span class="task-num">#16</span>
+        <div class="task-info">
+          <div class="task-title">RGB additív színkeverő scrollbarokkal</div>
+          <div class="task-desc">5 scrollbar: négyzet mérete + R/G/B értékek. A négyzet (Label) háttérszíne frissül, az ablak Title-je az RGB kódot mutatja. (WinForm Designer #3)</div>
+        </div>
+        <span class="task-toggle">▼</span>
+      </div>
+      <div class="task-body">
+        <div class="code-wrap">
+          <div class="code-label"><span class="code-lang">C# · WINFORMS · Form1.cs</span><button class="copy-btn" onclick="copyCode(this)">Másolás</button></div>
+<pre><span class="kw">using</span> System;
+<span class="kw">using</span> System.Drawing;
+<span class="kw">using</span> System.Windows.Forms;
+
+<span class="kw">namespace</span> RgbSzinkevero
+{
+    <span class="kw">public partial class</span> <span class="tp">Form1</span> : <span class="tp">Form</span>
+    {
+        <span class="cm">/* DESIGNER:
+           HScrollBar scrMeret (Min=50,Max=300,Value=100)
+           HScrollBar scrR/G/B  (Min=0,Max=255,Value=128)
+           Label lblNegyzet (BorderStyle=Fixed3D)
+           Label lblRGB                              */</span>
+
+        <span class="kw">public</span> <span class="fn">Form1</span>() { <span class="fn">InitializeComponent</span>(); <span class="fn">Frissit</span>(); }
+
+        <span class="kw">private void</span> <span class="fn">Frissit</span>()
+        {
+            <span class="kw">int</span> meret = scrMeret.Value;
+            <span class="kw">int</span> r = scrR.Value, g = scrG.Value, b = scrB.Value;
+            lblNegyzet.Size      = <span class="kw">new</span> <span class="tp">Size</span>(meret, meret);
+            lblNegyzet.BackColor = <span class="tp">Color</span>.<span class="fn">FromArgb</span>(r, g, b);
+            lblRGB.Text          = <span class="str">$"RGB({r}, {g}, {b})"</span>;
+            <span class="kw">this</span>.Text            = <span class="str">$"#{r:X2}{g:X2}{b:X2}"</span>;
+        }
+
+        <span class="kw">private void</span> <span class="fn">scrMeret_Scroll</span>(<span class="kw">object</span> s, <span class="tp">ScrollEventArgs</span> e) =&gt; <span class="fn">Frissit</span>();
+        <span class="kw">private void</span> <span class="fn">scrR_Scroll</span>(<span class="kw">object</span> s, <span class="tp">ScrollEventArgs</span> e)     =&gt; <span class="fn">Frissit</span>();
+        <span class="kw">private void</span> <span class="fn">scrG_Scroll</span>(<span class="kw">object</span> s, <span class="tp">ScrollEventArgs</span> e)     =&gt; <span class="fn">Frissit</span>();
+        <span class="kw">private void</span> <span class="fn">scrB_Scroll</span>(<span class="kw">object</span> s, <span class="tp">ScrollEventArgs</span> e)     =&gt; <span class="fn">Frissit</span>();
+    }
+}</pre>
+        </div>
+        <div class="winforms-note">
+          <span class="winforms-note-icon">⚠</span>
+          <span class="winforms-note-text"><strong>WinForms GUI</strong> – az eredeti kód Visual Studio + Windows környezetet igényel. A konzol demo RGB értékeket kér be és kiírja a hex kódot és a szín leírását.</span>
+        </div>
+        <div class="demo-divider"><span>▶ KONZOL DEMONSTRÁCIÓ</span></div>
+        <div class="editor-zone">
+          <div class="editor-toolbar">
+            <div class="editor-label-group">
+              <span class="editor-badge winforms-badge">✏ KONZOL DEMO</span>
+              <span class="editor-lang-tag">RGB → HEX konverzió · futtatható online</span>
+            </div>
+            <button class="run-btn" onclick="runCode(this)">▶ Futtatás</button>
+          </div>
+          <textarea class="code-editor" id="code-16" spellcheck="false"></textarea>
+          <div class="stdin-row">
+            <span class="stdin-label">⌨ BEMENET<br><span style="font-size:.6rem;font-weight:400;color:var(--muted)">itt szerkeszthető</span></span>
+            <textarea class="stdin-input" id="stdin-16" spellcheck="false"></textarea>
+          </div>
+          <div class="console-out" id="out-16">
+            <div class="console-header">
+              <div class="console-header-left">
+                <div class="console-status-dot" id="dot-16"></div>
+                <span class="console-title">KONZOL KIMENET</span>
+              </div>
+              <button class="clear-btn" onclick="clearOut('16')">✕ Töröl</button>
+            </div>
+            <pre class="console-content" id="console-16"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- #17 -->
+    <div class="task">
+      <div class="task-header" onclick="toggle(this)">
+        <span class="task-num">#17</span>
+        <div class="task-info">
+          <div class="task-title">Folyamatosan változó háttérszín</div>
+          <div class="task-desc">Az RGB paletta alapján az ablak háttérszíne folyamatosan, átmenetesen változik Timer segítségével. (WinForm Designer #4)</div>
+        </div>
+        <span class="task-toggle">▼</span>
+      </div>
+      <div class="task-body">
+        <div class="code-wrap">
+          <div class="code-label"><span class="code-lang">C# · WINFORMS · Form1.cs</span><button class="copy-btn" onclick="copyCode(this)">Másolás</button></div>
+<pre><span class="kw">using</span> System;
+<span class="kw">using</span> System.Drawing;
+<span class="kw">using</span> System.Windows.Forms;
+
+<span class="kw">namespace</span> ValtozoBatterszin
+{
+    <span class="kw">public partial class</span> <span class="tp">Form1</span> : <span class="tp">Form</span>
+    {
+        <span class="cm">/* DESIGNER: Timer tmrSzin (Interval=30, Enabled=true) */</span>
+
+        <span class="kw">private double</span> hue = <span class="nm">0.0</span>;
+
+        <span class="kw">public</span> <span class="fn">Form1</span>() { <span class="fn">InitializeComponent</span>(); tmrSzin.<span class="fn">Start</span>(); }
+
+        <span class="kw">private void</span> <span class="fn">tmrSzin_Tick</span>(<span class="kw">object</span> sender, <span class="tp">EventArgs</span> e)
+        {
+            hue = (hue + <span class="nm">0.5</span>) % <span class="nm">360.0</span>;
+            BackColor = <span class="fn">HsvToRgb</span>(hue, <span class="nm">1.0</span>, <span class="nm">1.0</span>);
+            Text = <span class="str">$"Háttérszín – {BackColor.R}, {BackColor.G}, {BackColor.B}"</span>;
+        }
+
+        <span class="kw">private static</span> <span class="tp">Color</span> <span class="fn">HsvToRgb</span>(<span class="kw">double</span> h, <span class="kw">double</span> s, <span class="kw">double</span> v)
+        {
+            <span class="kw">int</span>    hi = (<span class="kw">int</span>)(h / <span class="nm">60</span>) % <span class="nm">6</span>;
+            <span class="kw">double</span>  f = h / <span class="nm">60</span> - Math.<span class="fn">Floor</span>(h / <span class="nm">60</span>);
+            <span class="kw">double</span>  p = v * (<span class="nm">1</span> - s), q = v * (<span class="nm">1</span> - f * s),
+                    t = v * (<span class="nm">1</span> - (<span class="nm">1</span> - f) * s);
+            <span class="kw">double</span> r, g, b;
+            <span class="kw">switch</span> (hi)
+            {
+                <span class="kw">case</span> <span class="nm">0</span>: r=v; g=t; b=p; <span class="kw">break</span>; <span class="kw">case</span> <span class="nm">1</span>: r=q; g=v; b=p; <span class="kw">break</span>;
+                <span class="kw">case</span> <span class="nm">2</span>: r=p; g=v; b=t; <span class="kw">break</span>; <span class="kw">case</span> <span class="nm">3</span>: r=p; g=q; b=v; <span class="kw">break</span>;
+                <span class="kw">case</span> <span class="nm">4</span>: r=t; g=p; b=v; <span class="kw">break</span>; <span class="kw">default</span>: r=v; g=p; b=q; <span class="kw">break</span>;
+            }
+            <span class="kw">return</span> Color.<span class="fn">FromArgb</span>((<span class="kw">int</span>)(r*<span class="nm">255</span>),(<span class="kw">int</span>)(g*<span class="nm">255</span>),(<span class="kw">int</span>)(b*<span class="nm">255</span>));
+        }
+    }
+}</pre>
+        </div>
+        <div class="winforms-note">
+          <span class="winforms-note-icon">⚠</span>
+          <span class="winforms-note-text"><strong>WinForms GUI</strong> – az eredeti kód Visual Studio + Windows környezetet igényel. A konzol demo az HSV→RGB konverziót szemlélteti 12 egyenletesen elosztott hue értéken.</span>
+        </div>
+        <div class="demo-divider"><span>▶ KONZOL DEMONSTRÁCIÓ</span></div>
+        <div class="editor-zone">
+          <div class="editor-toolbar">
+            <div class="editor-label-group">
+              <span class="editor-badge winforms-badge">✏ KONZOL DEMO</span>
+              <span class="editor-lang-tag">HSV→RGB konverzió · futtatható online</span>
+            </div>
+            <button class="run-btn" onclick="runCode(this)">▶ Futtatás</button>
+          </div>
+          <textarea class="code-editor" id="code-17" spellcheck="false"></textarea>
+          <div class="console-out" id="out-17">
+            <div class="console-header">
+              <div class="console-header-left">
+                <div class="console-status-dot" id="dot-17"></div>
+                <span class="console-title">KONZOL KIMENET</span>
+              </div>
+              <button class="clear-btn" onclick="clearOut('17')">✕ Töröl</button>
+            </div>
+            <pre class="console-content" id="console-17"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- #18 -->
+    <div class="task">
+      <div class="task-header" onclick="toggle(this)">
+        <span class="task-num">#18</span>
+        <div class="task-info">
+          <div class="task-title">Kártya-memória játék</div>
+          <div class="task-desc">4×4 / 4×6 / 6×6 / 6×8 választható pályaméret, lefedett kártyák, páros egyezés keresése, gratulációs üzenet. (kartya_memoria_jatek)</div>
+        </div>
+        <span class="task-toggle">▼</span>
+      </div>
+      <div class="task-body">
+        <div class="code-wrap">
+          <div class="code-label"><span class="code-lang">C# · WINFORMS · Form1.cs</span><button class="copy-btn" onclick="copyCode(this)">Másolás</button></div>
+<pre><span class="kw">using</span> System;
+<span class="kw">using</span> System.Collections.Generic;
+<span class="kw">using</span> System.Drawing;
+<span class="kw">using</span> System.Linq;
+<span class="kw">using</span> System.Windows.Forms;
+
+<span class="kw">namespace</span> KartyaMemoria
+{
+    <span class="kw">public partial class</span> <span class="tp">Form1</span> : <span class="tp">Form</span>
+    {
+        <span class="cm">/* DESIGNER:
+           ComboBox cboMeret   (Items: "4×4","4×6","6×6","6×8"; SelectedIndex=0)
+           Button   btnUjJatek "Új játék"
+           Panel    pnlJatek   (játéktér, pl. 500×400)
+           Label    lblAllapot                                  */</span>
+
+        <span class="kw">private int</span>      sorok, oszlopok;
+        <span class="kw">private</span> <span class="tp">Button</span>[] kartyak;
+        <span class="kw">private int</span>[]    ertekek;
+        <span class="kw">private int</span>      elsoIndex    = -<span class="nm">1</span>;
+        <span class="kw">private int</span>      masodikIndex = -<span class="nm">1</span>;
+        <span class="kw">private bool</span>     varakozas    = <span class="kw">false</span>;
+        <span class="kw">private</span> <span class="tp">Timer</span>    tmr          = <span class="kw">new</span> <span class="tp">Timer</span> { Interval = <span class="nm">900</span> };
+
+        <span class="kw">public</span> <span class="fn">Form1</span>()
+        {
+            <span class="fn">InitializeComponent</span>();
+            cboMeret.Items.<span class="fn">AddRange</span>(<span class="kw">new object</span>[] { <span class="str">"4×4"</span>, <span class="str">"4×6"</span>, <span class="str">"6×6"</span>, <span class="str">"6×8"</span> });
+            cboMeret.SelectedIndex = <span class="nm">0</span>;
+            tmr.Tick += <span class="fn">TmrTick</span>;
+        }
+
+        <span class="kw">private void</span> <span class="fn">btnUjJatek_Click</span>(<span class="kw">object</span> sender, <span class="tp">EventArgs</span> e) =&gt; <span class="fn">UjJatek</span>();
+
+        <span class="kw">private void</span> <span class="fn">UjJatek</span>()
+        {
+            <span class="kw">switch</span> (cboMeret.SelectedIndex)
+            {
+                <span class="kw">case</span> <span class="nm">0</span>: sorok=<span class="nm">4</span>; oszlopok=<span class="nm">4</span>; <span class="kw">break</span>;
+                <span class="kw">case</span> <span class="nm">1</span>: sorok=<span class="nm">4</span>; oszlopok=<span class="nm">6</span>; <span class="kw">break</span>;
+                <span class="kw">case</span> <span class="nm">2</span>: sorok=<span class="nm">6</span>; oszlopok=<span class="nm">6</span>; <span class="kw">break</span>;
+                <span class="kw">default</span>: sorok=<span class="nm">6</span>; oszlopok=<span class="nm">8</span>; <span class="kw">break</span>;
+            }
+            <span class="kw">int</span> db = sorok * oszlopok;
+            <span class="kw">var</span> lista = <span class="kw">new</span> List&lt;<span class="kw">int</span>&gt;();
+            <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">1</span>; i &lt;= db / <span class="nm">2</span>; i++) { lista.<span class="fn">Add</span>(i); lista.<span class="fn">Add</span>(i); }
+            <span class="kw">var</span> rnd = <span class="kw">new</span> <span class="tp">Random</span>();
+            ertekek = lista.<span class="fn">OrderBy</span>(_ =&gt; rnd.<span class="fn">Next</span>()).<span class="fn">ToArray</span>();
+            <span class="cm">// ... kártyák elhelyezése pnlJatek-re (lásd teljes kód)</span>
+            elsoIndex = -<span class="nm">1</span>; varakozas = <span class="kw">false</span>;
+            lblAllapot.Text = <span class="str">"Fordíts fel egy kártyát!"</span>;
+        }
+
+        <span class="kw">private void</span> <span class="fn">Kartya_Click</span>(<span class="kw">object</span> sender, <span class="tp">EventArgs</span> e)
+        {
+            <span class="kw">if</span> (varakozas) <span class="kw">return</span>;
+            <span class="kw">var</span> btn = (<span class="tp">Button</span>)sender;
+            <span class="kw">int</span> idx = (<span class="kw">int</span>)btn.Tag;
+            <span class="kw">if</span> (!btn.Enabled || btn.Text != <span class="str">""</span> || idx == elsoIndex) <span class="kw">return</span>;
+            btn.Text = ertekek[idx].<span class="fn">ToString</span>();
+            btn.BackColor = Color.WhiteSmoke; btn.ForeColor = Color.DimGray;
+            <span class="kw">if</span> (elsoIndex == -<span class="nm">1</span>) { elsoIndex = idx; lblAllapot.Text = <span class="str">"Fordíts fel még egyet!"</span>; }
+            <span class="kw">else</span>
+            {
+                masodikIndex = idx; varakozas = <span class="kw">true</span>;
+                <span class="kw">if</span> (ertekek[elsoIndex] == ertekek[masodikIndex])
+                {
+                    kartyak[elsoIndex].BackColor = kartyak[masodikIndex].BackColor = Color.MediumSeaGreen;
+                    kartyak[elsoIndex].Enabled   = kartyak[masodikIndex].Enabled   = <span class="kw">false</span>;
+                    elsoIndex = -<span class="nm">1</span>; varakozas = <span class="kw">false</span>;
+                    <span class="fn">EllenorizVege</span>();
+                }
+                <span class="kw">else</span> tmr.<span class="fn">Start</span>();
+            }
+        }
+
+        <span class="kw">private void</span> <span class="fn">TmrTick</span>(<span class="kw">object</span> sender, <span class="tp">EventArgs</span> e)
+        {
+            tmr.<span class="fn">Stop</span>();
+            kartyak[elsoIndex].Text  = kartyak[masodikIndex].Text  = <span class="str">""</span>;
+            kartyak[elsoIndex].BackColor = kartyak[masodikIndex].BackColor = Color.SteelBlue;
+            kartyak[elsoIndex].ForeColor = kartyak[masodikIndex].ForeColor = Color.White;
+            elsoIndex = -<span class="nm">1</span>; varakozas = <span class="kw">false</span>;
+            lblAllapot.Text = <span class="str">"Fordíts fel egy kártyát!"</span>;
+        }
+
+        <span class="kw">private void</span> <span class="fn">EllenorizVege</span>()
+        {
+            <span class="kw">if</span> (kartyak.<span class="fn">All</span>(b =&gt; !b.Enabled))
+                MessageBox.<span class="fn">Show</span>(<span class="str">"Gratulálok! Minden párt megtaláltál! 🎉"</span>, <span class="str">"Nyertél!"</span>,
+                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+    }
+}</pre>
+        </div>
+        <div class="winforms-note">
+          <span class="winforms-note-icon">⚠</span>
+          <span class="winforms-note-text"><strong>WinForms GUI</strong> – az eredeti kód Visual Studio + Windows környezetet igényel. A konzol demo szöveges felületen játssza a memóriajátékot: a kártyák indexeit kell megadni.</span>
+        </div>
+        <div class="demo-divider"><span>▶ KONZOL DEMONSTRÁCIÓ</span></div>
+        <div class="editor-zone">
+          <div class="editor-toolbar">
+            <div class="editor-label-group">
+              <span class="editor-badge winforms-badge">✏ KONZOL DEMO</span>
+              <span class="editor-lang-tag">memóriajáték szöveges módban</span>
+            </div>
+            <button class="run-btn" onclick="runCode(this)">▶ Futtatás</button>
+          </div>
+          <textarea class="code-editor" id="code-18" spellcheck="false"></textarea>
+          <div class="stdin-row">
+            <span class="stdin-label">⌨ BEMENET<br><span style="font-size:.6rem;font-weight:400;color:var(--muted)">itt szerkeszthető</span></span>
+            <textarea class="stdin-input" id="stdin-18" spellcheck="false"></textarea>
+          </div>
+          <div class="console-out" id="out-18">
+            <div class="console-header">
+              <div class="console-header-left">
+                <div class="console-status-dot" id="dot-18"></div>
+                <span class="console-title">KONZOL KIMENET</span>
+              </div>
+              <button class="clear-btn" onclick="clearOut('18')">✕ Töröl</button>
+            </div>
+            <pre class="console-content" id="console-18"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+</main>
+
+<footer style="text-align:center;padding:2rem 1rem;border-top:1px solid var(--border);color:var(--muted);font-size:.78rem;letter-spacing:.04em;">
+  C# Portfólió · Visual Studio 2022 · .NET · <span style="color:var(--accent);">2025–2026</span>
+  <span style="margin-left:1.2rem;color:var(--border);">|</span>
+  <span style="margin-left:1.2rem;">Futtatás: <a href="https://wandbox.org" target="_blank" style="color:var(--accent);text-decoration:none;">Wandbox API</a></span>
+</footer>
+
+<!-- ═══════════════════════════════════════════════
+     C# FORRÁSKÓDOK  (script type=text/x-csharp)
+     A böngésző nem futtatja, csak tárolja.
+     JS-ből: document.getElementById('cs-XX').textContent
+═══════════════════════════════════════════════ -->
+
+<script type="text/x-csharp" id="cs-01">
+using System;
+
+namespace ForditottSzam
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.Write("Adja meg a pozitív egész számot: ");
+            string input = Console.ReadLine().Trim();
+
+            bool negativ = input.StartsWith("-");
+            if (negativ) input = input.Substring(1);
+
+            char[] chars = input.ToCharArray();
+            Array.Reverse(chars);
+            string forditott = new string(chars).TrimStart('0');
+
+            if (forditott == "") forditott = "0";
+            if (negativ && forditott != "0") forditott = "-" + forditott;
+
+            Console.WriteLine("Fordított szám: " + forditott);
+        }
+    }
+}
+</script>
+<script type="text/x-stdin" id="stdin-default-01">120400</script>
+
+<script type="text/x-csharp" id="cs-02">
+using System;
+
+namespace SzorzatokSzama
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.Write("Elemek száma (n): ");
+            int n = int.Parse(Console.ReadLine());
+            int[] tomb = new int[n];
+
+            for (int i = 0; i < n; i++)
+            {
+                Console.Write("  " + (i + 1) + ". elem: ");
+                tomb[i] = int.Parse(Console.ReadLine());
+            }
+
+            // Kulcsfelismerés:
+            // Összes nem-üres részsorozat: 2^n - 1
+            // Páratlan szorzatú <=> MINDEN elem páratlan => 2^k - 1
+            // Páros szorzatú = 2^n - 2^k
+            int paratlanDb = 0;
+            foreach (int x in tomb)
+                if (x % 2 != 0) paratlanDb++;
+
+            long osszes    = (1L << n) - 1;
+            long mindParat = (1L << paratlanDb) - 1;
+            long paros     = osszes - mindParat;
+
+            Console.WriteLine("\nPáros szorzatú részsorozatok száma: " + paros);
+        }
+    }
+}
+</script>
+<script type="text/x-stdin" id="stdin-default-02">3
+1
+2
+3</script>
+
+<script type="text/x-csharp" id="cs-03">
+using System;
+using System.Globalization;
+
+namespace HaromszogEllenorzes
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.Write("a oldal hossza: ");
+            double a = double.Parse(Console.ReadLine().Replace(',', '.'), CultureInfo.InvariantCulture);
+            Console.Write("b oldal hossza: ");
+            double b = double.Parse(Console.ReadLine().Replace(',', '.'), CultureInfo.InvariantCulture);
+            Console.Write("c oldal hossza: ");
+            double c = double.Parse(Console.ReadLine().Replace(',', '.'), CultureInfo.InvariantCulture);
+
+            bool pozitiv = a > 0 && b > 0 && c > 0;
+            bool hegyenloseg = a + b > c && a + c > b && b + c > a;
+
+            if (pozitiv && hegyenloseg)
+                Console.WriteLine("Igen, lehetnek egy háromszög oldalai.");
+            else if (!pozitiv)
+                Console.WriteLine("Az oldalak csak pozitív számok lehetnek.");
+            else
+                Console.WriteLine("Nem, ezek az oldalak nem alkothatnak háromszöget.");
+        }
+    }
+}
+</script>
+<script type="text/x-stdin" id="stdin-default-03">3
+4
+5</script>
+
+<script type="text/x-csharp" id="cs-04">
+using System;
+using System.Globalization;
+
+namespace HaromszogElemzes
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.Write("a oldal: ");
+            double a = double.Parse(Console.ReadLine().Replace(',', '.'), CultureInfo.InvariantCulture);
+            Console.Write("b oldal: ");
+            double b = double.Parse(Console.ReadLine().Replace(',', '.'), CultureInfo.InvariantCulture);
+            Console.Write("c oldal: ");
+            double c = double.Parse(Console.ReadLine().Replace(',', '.'), CultureInfo.InvariantCulture);
+
+            if (a <= 0 || b <= 0 || c <= 0 ||
+                !(a + b > c && a + c > b && b + c > a))
+            {
+                Console.WriteLine("Ezek nem alkothatnak háromszöget.");
+                return;
+            }
+
+            Console.WriteLine("Érvényes háromszög!\n");
+
+            if (a == b && b == c)
+                Console.WriteLine("Oldalak: Szabályos (egyenlő oldalú) háromszög");
+            else if (a == b || b == c || a == c)
+                Console.WriteLine("Oldalak: Egyenlő szárú háromszög");
+            else
+                Console.WriteLine("Oldalak: Általános (különböző oldalú) háromszög");
+
+            double cosA = (b*b + c*c - a*a) / (2*b*c);
+            double cosB = (a*a + c*c - b*b) / (2*a*c);
+            double cosC = (a*a + b*b - c*c) / (2*a*b);
+
+            double angA = Math.Acos(cosA) * 180 / Math.PI;
+            double angB = Math.Acos(cosB) * 180 / Math.PI;
+            double angC = Math.Acos(cosC) * 180 / Math.PI;
+
+            Console.WriteLine("Szögek:  a=" + angA.ToString("F2") + "°   b=" + angB.ToString("F2") + "°   c=" + angC.ToString("F2") + "°");
+
+            const double EPS = 1e-9;
+            if (Math.Abs(cosA) < EPS || Math.Abs(cosB) < EPS || Math.Abs(cosC) < EPS)
+                Console.WriteLine("Szögek: Derékszögű háromszög");
+            else if (cosA < 0 || cosB < 0 || cosC < 0)
+                Console.WriteLine("Szögek: Tompaszögű háromszög");
+            else
+                Console.WriteLine("Szögek: Hegyesszögű háromszög");
+        }
+    }
+}
+</script>
+<script type="text/x-stdin" id="stdin-default-04">3
+4
+5</script>
+
+<script type="text/x-csharp" id="cs-05">
+using System;
+
+namespace Evszak
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.Write("Adja meg a hónap nevét: ");
+            string honap = Console.ReadLine().Trim().ToLower();
+
+            string evszak;
+            if (honap == "március" || honap == "április" || honap == "május")
+                evszak = "Tavasz";
+            else if (honap == "június" || honap == "július" || honap == "augusztus")
+                evszak = "Nyár";
+            else if (honap == "szeptember" || honap == "október" || honap == "november")
+                evszak = "Ősz";
+            else if (honap == "december" || honap == "január" || honap == "február")
+                evszak = "Tél";
+            else
+                evszak = "Ismeretlen hónap";
+
+            Console.WriteLine("Évszak: " + evszak);
+        }
+    }
+}
+</script>
+<script type="text/x-stdin" id="stdin-default-05">március</script>
+
+<script type="text/x-csharp" id="cs-06">
+using System;
+using System.Globalization;
+
+namespace Teglatest
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.Write("a (hossz):     ");
+            double a = double.Parse(Console.ReadLine().Replace(',', '.'), CultureInfo.InvariantCulture);
+            Console.Write("b (szélesség): ");
+            double b = double.Parse(Console.ReadLine().Replace(',', '.'), CultureInfo.InvariantCulture);
+            Console.Write("c (magasság):  ");
+            double c = double.Parse(Console.ReadLine().Replace(',', '.'), CultureInfo.InvariantCulture);
+
+            double dAB     = Math.Sqrt(a*a + b*b);
+            double dBC     = Math.Sqrt(b*b + c*c);
+            double dAC     = Math.Sqrt(a*a + c*c);
+            double testAtlo = Math.Sqrt(a*a + b*b + c*c);
+            double felszin  = 2 * (a*b + b*c + a*c);
+            double terfogat = a * b * c;
+
+            Console.WriteLine("\nLapátló (ab): " + dAB.ToString("F4"));
+            Console.WriteLine("Lapátló (bc): " + dBC.ToString("F4"));
+            Console.WriteLine("Lapátló (ac): " + dAC.ToString("F4"));
+            Console.WriteLine("Testátló:     " + testAtlo.ToString("F4"));
+            Console.WriteLine("Felszín:      " + felszin.ToString("F4"));
+            Console.WriteLine("Térfogat:     " + terfogat.ToString("F4"));
+        }
+    }
+}
+</script>
+<script type="text/x-stdin" id="stdin-default-06">3
+4
+5</script>
+
+<script type="text/x-csharp" id="cs-07">
+using System;
+
+namespace NyelviKoszonto
+{
+    class Program
+    {
+        static bool KerdezKoszon(string kerdes, string igenSzo, string koszonto)
+        {
+            Console.Write(kerdes + " ");
+            string valasz = Console.ReadLine().Trim().ToLower();
+            if (valasz == igenSzo)
+            {
+                Console.WriteLine(koszonto);
+                return true;
+            }
+            return false;
+        }
+
+        static void Main(string[] args)
+        {
+            bool koszon = false;
+            koszon |= KerdezKoszon("Beszél magyarul? (igen/nem):", "igen", "Szia! Üdvözlöm!");
+            koszon |= KerdezKoszon("Speaks English?  (yes/no):",   "yes",  "Hello! Welcome!");
+            koszon |= KerdezKoszon("Sprechen Sie Deutsch? (ja/nein):", "ja", "Hallo! Willkommen!");
+
+            if (!koszon)
+                Console.WriteLine("\u2665");
+        }
+    }
+}
+</script>
+<script type="text/x-stdin" id="stdin-default-07">igen
+no
+nein</script>
+
+<script type="text/x-csharp" id="cs-08">
+using System;
+
+namespace TizSzamMinMax
+{
+    class Program
+    {
+        static int[] Beolvas()
+        {
+            int[] tomb = new int[10];
+            Console.WriteLine("Adjon meg 10 egész számot:");
+            for (int i = 0; i < 10; i++)
+            {
+                Console.Write("  " + (i + 1) + ". szám: ");
+                tomb[i] = int.Parse(Console.ReadLine());
+            }
+            return tomb;
+        }
+
+        static void Kiir(int min, int max)
+        {
+            Console.WriteLine("\nLegkisebb: " + min + "\tLegnagyobb: " + max);
+        }
+
+        static void Main(string[] args)
+        {
+            int[] tomb = Beolvas();
+
+            int min = tomb[0], max = tomb[0];
+            foreach (int x in tomb)
+            {
+                if (x < min) min = x;
+                if (x > max) max = x;
+            }
+            Kiir(min, max);
+        }
+    }
+}
+</script>
+<script type="text/x-stdin" id="stdin-default-08">5
+-3
+12
+7
+0
+-8
+3
+15
+1
+9</script>
+
+<script type="text/x-csharp" id="cs-09">
+using System;
+
+namespace NevNemKoszonto
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.Write("Neve: ");
+            string nev = Console.ReadLine().Trim();
+
+            Console.Write("Neme (no / ferfi): ");
+            string nem = Console.ReadLine().Trim().ToLower();
+
+            if (nem == "no" || nem == "nö" || nem == "nő")
+                Console.WriteLine("Üdvözlöm, " + nev + " kisasszony/asszony!");
+            else if (nem == "ferfi" || nem == "férfi")
+                Console.WriteLine("Üdvözlöm, " + nev + " úr!");
+            else
+                Console.WriteLine("Érvénytelen nem. Adjon meg 'no' vagy 'ferfi' értéket.");
+        }
+    }
+}
+</script>
+<script type="text/x-stdin" id="stdin-default-09">Kovács Éva
+no</script>
+
+<script type="text/x-csharp" id="cs-10">
+using System;
+
+namespace Cimletozo
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            int[] cimletek = { 20000, 10000, 5000, 2000, 1000, 500, 200, 100, 50, 20, 10, 5 };
+
+            Console.Write("Összeg (Ft): ");
+            string input = Console.ReadLine();
+
+            if (!int.TryParse(input, out int osszeg) || osszeg <= 0 || osszeg % 5 != 0)
+            {
+                Console.WriteLine("Érvénytelen! Pozitív, 5-tel osztható egész szám kell.");
+                return;
+            }
+
+            Console.Write(osszeg + " Ft = ");
+            int maradek = osszeg;
+            bool elso = true;
+
+            foreach (int cimlet in cimletek)
+            {
+                int db = maradek / cimlet;
+                if (db > 0)
+                {
+                    if (!elso) Console.Write(" + ");
+                    Console.Write(db + "×" + cimlet);
+                    maradek -= db * cimlet;
+                    elso = false;
+                }
+            }
+            Console.WriteLine(" Ft");
+        }
+    }
+}
+</script>
+<script type="text/x-stdin" id="stdin-default-10">54300</script>
+
+<script type="text/x-csharp" id="cs-11">
+using System;
+
+namespace PrimSzam
+{
+    class Program
+    {
+        static bool IsPrim(int n)
+        {
+            if (n < 2) return false;
+            if (n == 2) return true;
+            if (n % 2 == 0) return false;
+            for (int i = 3; i * i <= n; i += 2)
+                if (n % i == 0) return false;
+            return true;
+        }
+
+        static void Main(string[] args)
+        {
+            Console.Write("Adjon meg egy pozitív egész számot: ");
+            int n = int.Parse(Console.ReadLine());
+
+            if (n < 1) { Console.WriteLine("A szám nem pozitív."); return; }
+
+            if (IsPrim(n))
+                Console.WriteLine(n + " prímszám (törzsszám).");
+            else
+                Console.WriteLine(n + " összetett szám.");
+        }
+    }
+}
+</script>
+<script type="text/x-stdin" id="stdin-default-11">17</script>
+
+<!-- WinForms konzol demók -->
+
+<script type="text/x-csharp" id="cs-12">
+using System;
+using System.Collections.Generic;
+
+namespace TombFeladatok
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Random rnd = new Random(42);
+
+            Console.Write("N értéke (1-20): ");
+            int n = int.Parse(Console.ReadLine());
+            if (n < 1 || n > 20) { Console.WriteLine("Érvénytelen N!"); return; }
+
+            int[] tomb = new int[n];
+            for (int i = 0; i < n; i++)
+                tomb[i] = rnd.Next(-n, 3 * n + 1);
+
+            Console.WriteLine("Generált tömb: " + string.Join(", ", tomb));
+
+            // Összegzés
+            long sum = 0;
+            foreach (int x in tomb) sum += x;
+            Console.WriteLine("Összeg: " + sum);
+
+            // Eldöntés
+            Console.Write("\nKeresett szám (eldöntés): ");
+            int ker = int.Parse(Console.ReadLine());
+            bool talalt = false;
+            for (int i = 0; i < n && !talalt; i++)
+                if (tomb[i] == ker) talalt = true;
+            Console.WriteLine(ker + (talalt ? " --> megtalálható a tömbben." : " --> nincs a tömbben."));
+
+            // Kiválasztás (index)
+            int idx = -1;
+            talalt = false;
+            for (int i = 0; i < n && !talalt; i++)
+                if (tomb[i] == ker) { talalt = true; idx = i; }
+            if (talalt)
+                Console.WriteLine(ker + " indexe: " + idx);
+
+            // Egyszerű cserés rendezés
+            int[] r = (int[])tomb.Clone();
+            for (int i = 0; i < r.Length - 1; i++)
+                for (int j = i + 1; j < r.Length; j++)
+                    if (r[i] > r[j]) { int tmp = r[i]; r[i] = r[j]; r[j] = tmp; }
+
+            Console.WriteLine("\nRendezett tömb: " + string.Join(", ", r));
+        }
+    }
+}
+</script>
+<script type="text/x-stdin" id="stdin-default-12">8
+5</script>
+
+<script type="text/x-csharp" id="cs-13">
+using System;
+using System.Collections.Generic;
+
+namespace Konyvek
+{
+    class Konyv
+    {
+        public int    Sorszam;
+        public string Szerzo;
+        public string Cim;
+        public int    Ev;
+        public string ISBN;
+
+        public Konyv(int s, string sz, string c, int e, string i)
+        { Sorszam=s; Szerzo=sz; Cim=c; Ev=e; ISBN=i; }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            var konyvek = new List<Konyv>
+            {
+                new Konyv(1,  "Gárdonyi Géza",         "Egri csillagok",              1901, "978-963-01"),
+                new Konyv(2,  "Molnár Ferenc",          "A Pál utcai fiúk",            1906, "978-963-02"),
+                new Konyv(3,  "Jókai Mór",              "Arany ember",                 1872, "978-963-03"),
+                new Konyv(4,  "Márai Sándor",           "A gyertyák csonkig égnek",    1942, "978-963-04"),
+                new Konyv(5,  "Rejtő Jenő",             "A láthatatlan légió",         1939, "978-963-05"),
+                new Konyv(6,  "Szabó Magda",            "Az ajtó",                     1987, "978-963-06"),
+                new Konyv(7,  "Isaac Asimov",           "Alapítvány",                  1951, "978-055-07"),
+                new Konyv(8,  "Frank Herbert",          "Düne",                        1965, "978-044-08"),
+                new Konyv(9,  "J.R.R. Tolkien",         "A Gyürük Ura",                1954, "978-026-09"),
+                new Konyv(10, "George Orwell",          "1984",                        1949, "978-045-10"),
+                new Konyv(11, "Douglas Adams",          "Galaxis útikalauz stopposoknak", 1979, "978-033-11"),
+                new Konyv(12, "Ernest Hemingway",       "Az öreg halász és a tenger",  1952, "978-068-12"),
+                new Konyv(13, "F. Scott Fitzgerald",    "A nagy Gatsby",               1925, "978-074-13"),
+                new Konyv(14, "Gabriel García Márquez", "Száz év magány",              1967, "978-006-14"),
+                new Konyv(15, "Harper Lee",             "Ne bántsátok a feketerigót!", 1960, "978-006-15"),
+                new Konyv(16, "Ken Follett",            "A katedrális",                1989, "978-033-16"),
+                new Konyv(17, "Umberto Eco",            "A rózsa neve",                1980, "978-044-17"),
+                new Konyv(18, "Agatha Christie",        "Tíz kicsi néger",             1939, "978-000-18"),
+                new Konyv(19, "Stephen King",           "Ragyogás",                    1977, "978-030-19"),
+                new Konyv(20, "Jane Austen",            "Büszkeség és balítélet",      1813, "978-014-20"),
+            };
+
+            // Fejléc
+            Console.WriteLine(
+                "  # | " +
+                "Szerzo               | " +
+                "Cim                             | " +
+                "  Ev | ISBN");
+            Console.WriteLine(new string('-', 82));
+
+            foreach (var k in konyvek)
+            {
+                Console.WriteLine(
+                    k.Sorszam.ToString().PadLeft(3) + " | " +
+                    k.Szerzo.PadRight(20) + " | " +
+                    k.Cim.PadRight(31) + " | " +
+                    k.Ev.ToString().PadLeft(4) + " | " +
+                    k.ISBN);
+            }
+        }
+    }
+}
+</script>
+
+<script type="text/x-csharp" id="cs-14">
+using System;
+using System.Collections.Generic;
+
+namespace Telefonregiszter
+{
+    class Regiszter
+    {
+        public int    Id;
+        public string Nev;
+        public int    Irszam;
+        public string Telepules;
+        public string Telefon;
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            var lista = new List<Regiszter>
+            {
+                new Regiszter { Id=1,  Nev="Kiss Anna",      Irszam=2600, Telepules="Vác",        Telefon="+36201234567" },
+                new Regiszter { Id=2,  Nev="Nagy Péter",     Irszam=2000, Telepules="Szentendre", Telefon="+36301234567" },
+                new Regiszter { Id=3,  Nev="Major Éva",      Irszam=2000, Telepules="Szentendre", Telefon="+36307211385" },
+                new Regiszter { Id=4,  Nev="Pócs Péter",     Irszam=2600, Telepules="Vác",        Telefon="+36209968304" },
+                new Regiszter { Id=5,  Nev="Soós Kinga",     Irszam=2000, Telepules="Szentendre", Telefon="+36302038535" },
+                new Regiszter { Id=6,  Nev="Hamu Kende",     Irszam=2600, Telepules="Vác",        Telefon="+36308509031" },
+                new Regiszter { Id=7,  Nev="Paál Péter",     Irszam=2000, Telepules="Szentendre", Telefon="+36309808116" },
+                new Regiszter { Id=8,  Nev="Recski Olga",    Irszam=2600, Telepules="Vác",        Telefon="+36309308918" },
+                new Regiszter { Id=9,  Nev="Lörke András",   Irszam=2000, Telepules="Szentendre", Telefon="+36304157100" },
+                new Regiszter { Id=10, Nev="Misúr Csaba",    Irszam=2000, Telepules="Szentendre", Telefon="+36209547062" },
+                new Regiszter { Id=11, Nev="Kovács Áron",    Irszam=2600, Telepules="Vác",        Telefon="+36304122596" },
+                new Regiszter { Id=12, Nev="Komlós Dénes",   Irszam=2000, Telepules="Szentendre", Telefon="+36201760091" },
+                new Regiszter { Id=13, Nev="Prics Rea",      Irszam=2000, Telepules="Szentendre", Telefon="+36204109613" },
+                new Regiszter { Id=14, Nev="Orosz András",   Irszam=2600, Telepules="Vác",        Telefon="+36308876226" },
+                new Regiszter { Id=15, Nev="Asztalos Ildikó",Irszam=2000, Telepules="Szentendre", Telefon="+36309822475" },
+            };
+
+            // Névlista
+            Console.WriteLine("=== NÉVLISTA ===");
+            foreach (var r in lista)
+                Console.WriteLine("  " + r.Id + ". " + r.Nev);
+
+            // Váciak
+            Console.WriteLine("\n=== VÁCIAK ===");
+            foreach (var r in lista)
+                if (r.Telepules == "Vác")
+                    Console.WriteLine("  " + r.Nev + "  (" + r.Irszam + " " + r.Telepules + ")");
+
+            // Telekom (+3630) elöfizetök
+            Console.WriteLine("\n=== TELEKOM (+3630) ELŐFIZETŐK ===");
+            foreach (var r in lista)
+                if (r.Telefon.StartsWith("+3630"))
+                    Console.WriteLine("  " + r.Nev.PadRight(18) + r.Telefon);
+        }
+    }
+}
+</script>
+
+<script type="text/x-csharp" id="cs-15">
+using System;
+
+namespace SarkokraUgrik
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.Write("Képernyő szélessége (px): ");
+            int sw = int.Parse(Console.ReadLine());
+            Console.Write("Képernyő magassága (px):  ");
+            int sh = int.Parse(Console.ReadLine());
+            Console.Write("Ablak szélessége (px):    ");
+            int fw = int.Parse(Console.ReadLine());
+            Console.Write("Ablak magassága (px):     ");
+            int fh = int.Parse(Console.ReadLine());
+
+            Console.WriteLine("\n=== SAROKPOZÍCIÓK ===");
+            Console.WriteLine("Bal-felső  (Location):  X=" + 0             + "  Y=" + 0);
+            Console.WriteLine("Jobb-felső (Location):  X=" + (sw - fw)     + "  Y=" + 0);
+            Console.WriteLine("Bal-alsó   (Location):  X=" + 0             + "  Y=" + (sh - fh));
+            Console.WriteLine("Jobb-alsó  (Location):  X=" + (sw - fw)     + "  Y=" + (sh - fh));
+        }
+    }
+}
+</script>
+<script type="text/x-stdin" id="stdin-default-15">1920
+1080
+400
+300</script>
+
+<script type="text/x-csharp" id="cs-16">
+using System;
+
+namespace RgbSzinkevero
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.Write("R érték (0-255): ");
+            int r = int.Parse(Console.ReadLine());
+            Console.Write("G érték (0-255): ");
+            int g = int.Parse(Console.ReadLine());
+            Console.Write("B érték (0-255): ");
+            int b = int.Parse(Console.ReadLine());
+
+            r = Math.Max(0, Math.Min(255, r));
+            g = Math.Max(0, Math.Min(255, g));
+            b = Math.Max(0, Math.Min(255, b));
+
+            Console.WriteLine("\nRGB(" + r + ", " + g + ", " + b + ")");
+            Console.WriteLine("HEX: #" + r.ToString("X2") + g.ToString("X2") + b.ToString("X2"));
+
+            // Átlagos fényerő (luminance közelítés)
+            double lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+            Console.WriteLine("Luminancia (közelítés): " + lum.ToString("F1"));
+            Console.WriteLine("Szín karakterisztika: " + (lum > 127 ? "Világos" : "Sötét") + " szín");
+
+            // Domináns csatorna
+            if (r >= g && r >= b) Console.WriteLine("Domináns csatorna: Piros");
+            else if (g >= r && g >= b) Console.WriteLine("Domináns csatorna: Zöld");
+            else Console.WriteLine("Domináns csatorna: Kék");
+        }
+    }
+}
+</script>
+<script type="text/x-stdin" id="stdin-default-16">255
+128
+0</script>
+
+<script type="text/x-csharp" id="cs-17">
+using System;
+
+namespace ValtozoBatterszin
+{
+    class Program
+    {
+        static void HsvToRgb(double h, double s, double v, out int r, out int g, out int b)
+        {
+            int    hi = (int)(h / 60) % 6;
+            double f  = h / 60 - Math.Floor(h / 60);
+            double p  = v * (1 - s);
+            double q  = v * (1 - f * s);
+            double t  = v * (1 - (1 - f) * s);
+
+            double rd, gd, bd;
+            switch (hi)
+            {
+                case 0: rd=v; gd=t; bd=p; break;
+                case 1: rd=q; gd=v; bd=p; break;
+                case 2: rd=p; gd=v; bd=t; break;
+                case 3: rd=p; gd=q; bd=v; break;
+                case 4: rd=t; gd=p; bd=v; break;
+                default: rd=v; gd=p; bd=q; break;
+            }
+            r = (int)(rd * 255);
+            g = (int)(gd * 255);
+            b = (int)(bd * 255);
+        }
+
+        static void Main(string[] args)
+        {
+            Console.WriteLine("HSV paletta körének 24 lépése (hue 0..345, s=1, v=1):\n");
+            Console.WriteLine("  Hue  |  R    G    B   | HEX");
+            Console.WriteLine(new string('-', 42));
+
+            for (int deg = 0; deg < 360; deg += 15)
+            {
+                HsvToRgb(deg, 1.0, 1.0, out int r, out int g, out int b);
+                Console.WriteLine(
+                    deg.ToString().PadLeft(5) + "  |  " +
+                    r.ToString().PadLeft(3) + "  " +
+                    g.ToString().PadLeft(3) + "  " +
+                    b.ToString().PadLeft(3) + "  | #" +
+                    r.ToString("X2") + g.ToString("X2") + b.ToString("X2"));
+            }
+        }
+    }
+}
+</script>
+
+<script type="text/x-csharp" id="cs-18">
+using System;
+using System.Collections.Generic;
+
+namespace KartyaMemoriaKonzol
+{
+    class Program
+    {
+        static int[] ertekek;
+        static bool[] felfedett;
+        static int meret;
+
+        static void Rajzol()
+        {
+            Console.WriteLine("\n  Tábla (? = lefedett, szám = felfedett):");
+            int oszlopok = meret == 16 ? 4 : meret == 24 ? 6 : meret == 36 ? 6 : 8;
+            for (int i = 0; i < meret; i++)
+            {
+                string cel = felfedett[i] ? ertekek[i].ToString().PadLeft(2) : " ?";
+                Console.Write("[" + cel + "]");
+                if ((i + 1) % oszlopok == 0) Console.WriteLine("  (" + (i - oszlopok + 1) + "-" + i + ")");
+            }
+        }
+
+        static void Main(string[] args)
+        {
+            int[] meretek = { 16, 24, 36, 48 };
+            Console.WriteLine("Válassz pályaméretet:");
+            Console.WriteLine("  1 = 4x4 (16 kártya)");
+            Console.WriteLine("  2 = 4x6 (24 kártya)");
+            Console.WriteLine("  3 = 6x6 (36 kártya)");
+            Console.WriteLine("  4 = 6x8 (48 kártya)");
+            Console.Write("Választás (1-4): ");
+            int valasz = int.Parse(Console.ReadLine());
+            if (valasz < 1 || valasz > 4) valasz = 1;
+
+            meret = meretek[valasz - 1];
+            ertekek = new int[meret];
+            felfedett = new bool[meret];
+
+            // Pár generálás véletlenszerűen (seed=7 a reprodukálhatóságért)
+            var lista = new List<int>();
+            for (int i = 1; i <= meret / 2; i++) { lista.Add(i); lista.Add(i); }
+
+            Random rnd = new Random(7);
+            for (int i = lista.Count - 1; i > 0; i--)
+            {
+                int j = rnd.Next(i + 1);
+                int tmp = lista[i]; lista[i] = lista[j]; lista[j] = tmp;
+            }
+            for (int i = 0; i < meret; i++) ertekek[i] = lista[i];
+
+            int parok = 0;
+            Console.WriteLine("\nJáték elindult! Add meg a kártya indexét (0-" + (meret-1) + "). Két indexet kell felfordítani.");
+
+            while (parok < meret / 2)
+            {
+                Rajzol();
+                Console.Write("\nElső kártya indexe: ");
+                int a = int.Parse(Console.ReadLine());
+                if (a < 0 || a >= meret || felfedett[a]) { Console.WriteLine("Érvénytelen!"); continue; }
+
+                Console.Write("Második kártya indexe: ");
+                int b = int.Parse(Console.ReadLine());
+                if (b < 0 || b >= meret || felfedett[b] || b == a) { Console.WriteLine("Érvénytelen!"); continue; }
+
+                Console.WriteLine("  [" + a + "]=" + ertekek[a] + "   [" + b + "]=" + ertekek[b]);
+
+                if (ertekek[a] == ertekek[b])
+                {
+                    felfedett[a] = felfedett[b] = true;
+                    parok++;
+                    Console.WriteLine("  TALÁLAT! (" + parok + "/" + (meret/2) + " pár megvan)");
+                }
+                else
+                {
+                    Console.WriteLine("  Nem egyezik, visszafordul.");
+                }
+            }
+
+            Rajzol();
+            Console.WriteLine("\nGratulálok! Minden párt megtaláltál!");
+        }
+    }
+}
+</script>
+<script type="text/x-stdin" id="stdin-default-18">1
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15</script>
+
+<!-- ═══════════════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════════════ -->
+<script>
+  // ── Kódok és stdin betöltése ──────────────────────
+  document.addEventListener('DOMContentLoaded', function () {
+    for (let i = 1; i <= 18; i++) {
+      const id   = String(i).padStart(2, '0');
+      const csEl = document.getElementById('cs-' + id);
+      const taEl = document.getElementById('code-' + id);
+      if (csEl && taEl) {
+        taEl.value = csEl.textContent.trimStart();
+        // Auto-resize
+        taEl.style.height = 'auto';
+        taEl.style.height = Math.min(taEl.scrollHeight, 520) + 'px';
+      }
+
+      const stdinEl = document.getElementById('stdin-default-' + id);
+      const stdinTa = document.getElementById('stdin-' + id);
+      if (stdinEl && stdinTa) {
+        stdinTa.value = stdinEl.textContent.trim();
+      }
+    }
+  });
+
+  // ── Toggle ────────────────────────────────────────
+  function toggle(header) {
+    const task = header.closest('.task');
+    task.classList.toggle('open');
+  }
+
+  // ── Másolás ───────────────────────────────────────
+  function copyCode(btn) {
+    const pre = btn.closest('.code-wrap').querySelector('pre');
+    navigator.clipboard.writeText(pre.innerText).then(() => {
+      btn.textContent = '✓ Másolva';
+      setTimeout(() => btn.textContent = 'Másolás', 1800);
+    });
+  }
+
+  // ── Konzol törlés ─────────────────────────────────
+  function clearOut(id) {
+    const out  = document.getElementById('out-' + id);
+    const con  = document.getElementById('console-' + id);
+    const dot  = document.getElementById('dot-' + id);
+    out.classList.remove('visible');
+    con.textContent = '';
+    con.className   = 'console-content';
+    dot.className   = 'console-status-dot';
+  }
+
+
+  // ── Stdin injektálás (Console.SetIn) ─────────────
+  function injectStdin(code, stdin) {
+    if (!stdin || !stdin.trim()) return code;
+    const esc = stdin.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\r\n|\n/g, '\\n');
+    const inj = 'System.Console.SetIn(new System.IO.StringReader("' + esc + '"));';
+    if (/static\s+(?:async\s+)?(?:void|Task)\s+Main\s*\(/.test(code)) {
+      return code.replace(/(static\s+(?:async\s+)?(?:void|Task(?:<int>)?)\s+Main\s*\([^)]*\)\s*\{)/, '$1\n            ' + inj);
+    }
+    return inj + '\n' + code;
+  }
+
+  // ── JDoodle futtatás ──────────────────────────────
+  async function runCode(btn) {
+    const zone      = btn.closest('.editor-zone');
+    const codeArea  = zone.querySelector('.code-editor');
+    const stdinArea = zone.querySelector('.stdin-input');
+    const id        = codeArea ? codeArea.id.replace('code-', '') : null;
+    const out  = id ? document.getElementById('out-'     + id) : zone.querySelector('.console-out');
+    const pre  = id ? document.getElementById('console-' + id) : zone.querySelector('.console-content');
+    const dot  = id ? document.getElementById('dot-'     + id) : zone.querySelector('.console-status-dot');
+    const code  = codeArea  ? codeArea.value  : '';
+    const stdin = stdinArea ? stdinArea.value : '';
+
+    if (!code.trim()) { setOutput(out, pre, dot, 'Nincs kód a szerkesztőben.', true); return; }
+
+    const clientId     = '12e6447205a2bcb3665c3794d4656c3e';
+    const clientSecret = '36786c98d2d26cc056e71f5e8a27c932cf783c1959f2ad2153da02fadc39cb5';
+
+    btn.disabled = true; btn.textContent = '⏳ Futtatás...'; btn.classList.add('running');
+    out.classList.add('visible');
+    pre.className = 'console-content loading-state';
+    pre.textContent = 'Fordítás és futtatás folyamatban...';
+    dot.className = 'console-status-dot running';
+
+    try {
+      const res = await fetch('https://corsproxy.io/?url=https://api.jdoodle.com/v1/execute', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          script:       injectStdin(code, stdin),
+          stdin:        stdin || '',
+          language:     'csharp',
+          versionIndex: '3',
+          clientId,
+          clientSecret
+        })
+      });
+      if (!res.ok) {
+        if (res.status === 401) {
+          setOutput(out, pre, dot, 'Hibás API credentials (401)!\nEllenőrizd a ⚙ beállításokban.', true);
+        } else {
+          throw new Error('JDoodle HTTP ' + res.status);
+        }
+        return;
+      }
+      const d = await res.json();
+      if (d.statusCode === 401 || d.error) { setOutput(out, pre, dot, 'Hibás credentials!\n' + (d.error || ''), true); return; }
+      if (d.statusCode === 429) { setOutput(out, pre, dot, 'Napi limit elérve (200/nap).\nHolnap újraindul az ingyenes keret.', true); return; }
+      const output = (d.output || '').trimEnd() || '(Nincs konzol kimenet)';
+      setOutput(out, pre, dot, output, d.statusCode !== 200);
+    } catch (err) {
+      setOutput(out, pre, dot, 'Hálózati hiba: ' + err.message + '\n\nEllenőrizd az internetkapcsolatot.', true);
+    } finally {
+      btn.disabled = false; btn.textContent = '▶ Futtatás'; btn.classList.remove('running');
+    }
+  }
+
+  function setOutput(outEl, preEl, dotEl, text, isError) {
+    outEl.classList.add('visible');
+    preEl.textContent = text;
+    preEl.className   = 'console-content' + (isError ? ' has-error' : '');
+    dotEl.className   = 'console-status-dot ' + (isError ? 'err' : 'ok');
+  }
+
+  // ── Aktív nav elem görgetés alapján ──────────────
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('nav a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 120) current = s.id;
+    });
+    navLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  }, { passive: true });
+
+  // ── Tab key support in textareas ─────────────────
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Tab' && e.target.classList.contains('code-editor')) {
+      e.preventDefault();
+      const ta  = e.target;
+      const s   = ta.selectionStart;
+      const end = ta.selectionEnd;
+      ta.value  = ta.value.substring(0, s) + '    ' + ta.value.substring(end);
+      ta.selectionStart = ta.selectionEnd = s + 4;
+    }
+  });
+</script>
+</body>
+</html>
