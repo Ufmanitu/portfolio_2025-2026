@@ -419,81 +419,9 @@
     header { padding: 2rem 1rem; }
     .code-editor { font-size: .72rem; }
   }
-
-  /* ── Live Server banner ── */
-  .live-server-banner {
-    background: linear-gradient(90deg, rgba(251,191,36,.12) 0%, rgba(251,191,36,.06) 100%);
-    border-bottom: 2px solid rgba(251,191,36,.35);
-    padding: .85rem 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-  .live-server-banner .lsb-icon {
-    font-size: 1.5rem;
-    flex-shrink: 0;
-  }
-  .live-server-banner .lsb-text {
-    flex: 1;
-    min-width: 200px;
-  }
-  .live-server-banner .lsb-title {
-    font-size: .95rem;
-    font-weight: 800;
-    color: var(--yellow);
-    letter-spacing: .01em;
-    margin-bottom: .2rem;
-  }
-  .live-server-banner .lsb-sub {
-    font-size: .78rem;
-    color: rgba(251,191,36,.7);
-    line-height: 1.5;
-    font-family: 'JetBrains Mono', monospace;
-  }
-  .live-server-banner .lsb-sub strong {
-    color: var(--yellow);
-  }
-  .live-server-banner .lsb-steps {
-    display: flex;
-    gap: .5rem;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-  .lsb-step {
-    background: rgba(251,191,36,.12);
-    border: 1px solid rgba(251,191,36,.25);
-    border-radius: 6px;
-    padding: .3rem .75rem;
-    font-size: .72rem;
-    font-family: 'JetBrains Mono', monospace;
-    color: var(--yellow);
-    white-space: nowrap;
-  }
-  .lsb-arrow {
-    color: rgba(251,191,36,.4);
-    font-size: .8rem;
-  }
 </style>
 </head>
 <body>
-
-<div class="live-server-banner">
-  <span class="lsb-icon">⚡</span>
-  <div class="lsb-text">
-    <div class="lsb-title">A feladatok futtatásához Live Server szükséges</div>
-    <div class="lsb-sub">Kérjük, ne dupla kattintással nyissa meg! A <strong>▶ Futtatás</strong> gomb csak helyi szerverről működik.</div>
-  </div>
-  <div class="lsb-steps">
-    <span class="lsb-step">1. VS Code</span>
-    <span class="lsb-arrow">→</span>
-    <span class="lsb-step">2. Extensions → „Live Server"</span>
-    <span class="lsb-arrow">→</span>
-    <span class="lsb-step">3. Jobb klikk a fájlon</span>
-    <span class="lsb-arrow">→</span>
-    <span class="lsb-step">4. Open with Live Server</span>
-  </div>
-</div>
 
 <header>
   <h1>C# Portfólió</h1>
