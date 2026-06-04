@@ -1,6 +1,6 @@
 # C# Portfólió – Futtatási útmutató
 
-## Megnyitás
+## Megnyitás https://ufmanitu.github.io/portfolio_2025-2026/
 
 Az oldal közvetlenül elérhető a GitHub Pages linkre kattintva – telepítés vagy beállítás nem szükséges.
 
