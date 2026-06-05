@@ -4,11 +4,9 @@
 
 Az oldal közvetlenül elérhető a GitHub Pages linkre kattintva – telepítés vagy beállítás nem szükséges.
 
-Azonban ha letölti a fájlt és nem a githubon keresztül futtatja, 
-akkor Live Server extensionnel kell megnyitni, ha szeretnénk az oldalon futtatni a feladatok eredményét.
+Ha le van töltve a fájl, Live Server extensionnel kell megnyitni VS Code-ban (ne dupla kattintással), különben a Futtatás gomb nem működik.
 
-MINDKÉT ESETBEN internet kapcsolat szükséges, hogy az oldalon belül 
-a feladatok kódja lefusson.
+Mindkét esetben internetkapcsolat szükséges.
 
 ---
 
@@ -21,15 +19,16 @@ a feladatok kódja lefusson.
 
 ---
 
-## Korlátok
+## Technikai háttér
 
-| Limit | Érték |
+A kódok futtatása a **JDoodle API**-n keresztül történik, egy saját **Cloudflare Worker** proxyn át (`plain-lab-e94f.attika-eger.workers.dev`). Ez biztosítja, hogy a böngésző és a JDoodle szerver közötti kommunikáció akadálymentesen működjön.
+
+| Komponens | Részlet |
 |---|---|
-| Napi futtatások | 200 / nap |
-| Visszaállítás | minden éjfélkor (UTC) |
 | Fordító | C# / Mono (JDoodle API) |
-
-Ha a napi limit elérésre kerül, másnap automatikusan folytatható a használat.
+| Proxy | Cloudflare Worker (ingyenes, 100 000 kérés/nap) |
+| Napi limit | 200 futtatás / nap (JDoodle ingyenes csomag) |
+| Visszaállítás | minden éjfélkor (UTC) |
 
 ---
 
@@ -37,6 +36,6 @@ Ha a napi limit elérésre kerül, másnap automatikusan folytatható a használ
 
 | Hiba | Megoldás |
 |---|---|
-| `429` hibakód | Napi limit elérve, másnap újraindul |
-| `401` hibakód | API credentials hiba – kérjük, értesítse a készítőt |
+| `Failed to fetch` | A fájl `file://`-ból fut – Live Servert kell használni |
 | Üres konzol | Ellenőrizze a BEMENET mezőt, lehetséges, hogy hiányzik egy érték |
+| `429` hibakód | Napi limit elérve, másnap újraindul |
