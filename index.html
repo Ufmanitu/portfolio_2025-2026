@@ -523,6 +523,9 @@
 <header>
   <h1>C# Portfólió</h1>
   <p>Éves tananyag – Konzolos és WinForms feladatok megoldásai · Visual Studio 2022 · .NET</p>
+  <p style="margin-top:.6rem;font-size:.82rem;opacity:.7;letter-spacing:.04em;">
+    Bacsó-Tóth Attila &nbsp;·&nbsp; 11/P osztály &nbsp;·&nbsp; 2025–2026
+  </p>
 </header>
 
 <nav>
@@ -2080,10 +2083,881 @@
     </div>
 
   </section>
+
+  <!-- ═══════════════ ÓRAI MUNKÁK ═══════════════ -->
+  <section class="section" id="orai">
+    <div class="section-header">
+      <span class="section-badge orai">ÓRAI</span>
+      <h2>Órai munkák</h2>
+    </div>
+
+    <!-- Sub-navigáció -->
+    <div class="orai-subnav">
+      <a href="#om01">OM01 · Rendezések</a>
+      <a href="#om02">OM02 · Tömb-tételek</a>
+      <a href="#om03">OM03 · LINQ</a>
+      <a href="#om04">OM04 · Mátrix</a>
+      <a href="#om05" class="wf">OM05 · Label Grid</a>
+      <a href="#om06" class="wf">OM06 · Kártya WF</a>
+      <a href="#om07" class="wf">OM07 · Szökő gomb</a>
+      <a href="#om08" class="wf">OM08 · Gomb események</a>
+      <a href="#om09" class="wf">OM09 · Ember adatok</a>
+    </div>
+
+    <!-- ── OM01 – Rendezési algoritmusok ────────────── -->
+    <div class="orai-subhead" id="om01">
+      <span class="orai-tag konzol-tag">KONZOL</span>
+      <h3>Rendezési algoritmusok</h3>
+    </div>
+
+    <div class="task">
+      <div class="task-header" onclick="toggle(this)">
+        <span class="task-num">OM01a</span>
+        <div class="task-info">
+          <div class="task-title">Egyszerű cserés rendezés (ECS)</div>
+          <div class="task-desc">Minden i-re végigvizsgálja a tömb maradékát és szükség esetén felcseréli. O(n²)</div>
+        </div>
+        <span class="task-toggle">▼</span>
+      </div>
+      <div class="task-body">
+        <div class="code-wrap">
+          <div class="code-label"><span class="code-lang">C# · KONZOL</span><button class="copy-btn" onclick="copyCode(this)">Másolás</button></div>
+<pre><span class="kw">static void</span> <span class="fn">ECS</span>(<span class="kw">int</span>[] T)
+{
+    <span class="kw">int</span> seged;
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i &lt; T.Length; i++)
+    {
+        <span class="kw">for</span> (<span class="kw">int</span> j = i + <span class="nm">1</span>; j &lt; T.Length; j++)
+        {
+            <span class="kw">if</span> (T[i] &gt; T[j])
+            {
+                seged = T[i];
+                T[i] = T[j];
+                T[j] = seged;
+            }
+        }
+    }
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <div class="task-header" onclick="toggle(this)">
+        <span class="task-num">OM01b</span>
+        <div class="task-info">
+          <div class="task-title">Buborékos rendezés (BUBI)</div>
+          <div class="task-desc">Szomszédos elemek összehasonlítása és cseréje; a legnagyobb elem „felbuborékol" a végére. O(n²)</div>
+        </div>
+        <span class="task-toggle">▼</span>
+      </div>
+      <div class="task-body">
+        <div class="code-wrap">
+          <div class="code-label"><span class="code-lang">C# · KONZOL</span><button class="copy-btn" onclick="copyCode(this)">Másolás</button></div>
+<pre><span class="kw">static void</span> <span class="fn">BUBI</span>(<span class="kw">int</span>[] T)
+{
+    <span class="kw">int</span> seged;
+    <span class="kw">for</span> (<span class="kw">int</span> i = T.Length - <span class="nm">1</span>; i &gt; <span class="nm">0</span>; i--)
+    {
+        <span class="kw">for</span> (<span class="kw">int</span> j = <span class="nm">0</span>; j &lt; i; j++)
+        {
+            <span class="kw">if</span> (T[j] &gt; T[j + <span class="nm">1</span>])
+            {
+                seged = T[j];
+                T[j] = T[j + <span class="nm">1</span>];
+                T[j + <span class="nm">1</span>] = seged;
+            }
+        }
+    }
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <div class="task-header" onclick="toggle(this)">
+        <span class="task-num">OM01c</span>
+        <div class="task-info">
+          <div class="task-title">MinMax (kiválasztásos) rendezés</div>
+          <div class="task-desc">Minden menetben megkeresi a legkisebb elemet és a helyére teszi. O(n²)</div>
+        </div>
+        <span class="task-toggle">▼</span>
+      </div>
+      <div class="task-body">
+        <div class="code-wrap">
+          <div class="code-label"><span class="code-lang">C# · KONZOL</span><button class="copy-btn" onclick="copyCode(this)">Másolás</button></div>
+<pre><span class="kw">static void</span> <span class="fn">MinMax</span>(<span class="kw">int</span>[] tomb)
+{
+    <span class="kw">int</span> index, seged;
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i &lt; tomb.Length; i++)
+    {
+        index = i;
+        <span class="kw">for</span> (<span class="kw">int</span> j = i + <span class="nm">1</span>; j &lt; tomb.Length; j++)
+        {
+            <span class="kw">if</span> (tomb[index] &gt; tomb[j])
+                index = j;
+        }
+        seged = tomb[i];
+        tomb[i] = tomb[index];
+        tomb[index] = seged;
+    }
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <div class="task-header" onclick="toggle(this)">
+        <span class="task-num">OM01d</span>
+        <div class="task-info">
+          <div class="task-title">Beszúró rendezés</div>
+          <div class="task-desc">Minden elemet a már rendezett részbe illeszti be megfelelő helyre. Stabil, kis adatoknál gyors. O(n²)</div>
+        </div>
+        <span class="task-toggle">▼</span>
+      </div>
+      <div class="task-body">
+        <div class="code-wrap">
+          <div class="code-label"><span class="code-lang">C# · KONZOL</span><button class="copy-btn" onclick="copyCode(this)">Másolás</button></div>
+<pre><span class="kw">static void</span> <span class="fn">BeszuroR</span>(<span class="kw">int</span>[] tomb)
+{
+    <span class="kw">int</span> kulcs, j;
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">1</span>; i &lt; tomb.Length; ++i)
+    {
+        kulcs = tomb[i];
+        j = i - <span class="nm">1</span>;
+
+        <span class="kw">while</span> (j &gt;= <span class="nm">0</span> &amp;&amp; tomb[j] &gt; kulcs)
+        {
+            tomb[j + <span class="nm">1</span>] = tomb[j];
+            j--;
+        }
+        tomb[j + <span class="nm">1</span>] = kulcs;
+    }
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <div class="task-header" onclick="toggle(this)">
+        <span class="task-num">OM01e</span>
+        <div class="task-info">
+          <div class="task-title">Shell rendezés</div>
+          <div class="task-desc">Beszúró rendezés általánosítása csökkenő gap értékekkel. ~O(n log²n)</div>
+        </div>
+        <span class="task-toggle">▼</span>
+      </div>
+      <div class="task-body">
+        <div class="code-wrap">
+          <div class="code-label"><span class="code-lang">C# · KONZOL</span><button class="copy-btn" onclick="copyCode(this)">Másolás</button></div>
+<pre><span class="kw">static void</span> <span class="fn">Shell</span>(<span class="kw">int</span>[] tomb)
+{
+    <span class="kw">int</span> gap, j, temp;
+
+    <span class="kw">for</span> (gap = tomb.Length / <span class="nm">2</span>; gap &gt; <span class="nm">0</span>; gap /= <span class="nm">2</span>)
+    {
+        <span class="kw">for</span> (<span class="kw">int</span> i = gap; i &lt; tomb.Length; i++)
+        {
+            temp = tomb[i];
+            j = i;
+
+            <span class="kw">while</span> (j &gt;= gap &amp;&amp; tomb[j - gap] &gt; temp)
+            {
+                tomb[j] = tomb[j - gap];
+                j -= gap;
+            }
+            tomb[j] = temp;
+        }
+    }
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── OM02 – Tömb-tételek konzol ───────────────── -->
+    <div class="orai-subhead" id="om02">
+      <span class="orai-tag konzol-tag">KONZOL</span>
+      <h3>Tömb-tételek – konzol metódusok</h3>
+    </div>
+    <p style="color:var(--muted);font-size:.8rem;margin-bottom:1.25rem;">A portfólió <strong style="color:var(--accent);">#12</strong> WinForms GUI-val mutatja ezeket. Ezek az alap konzol metódusváltozatok.</p>
+
+    <div class="task">
+      <div class="task-header" onclick="toggle(this)">
+        <span class="task-num">OM02a</span>
+        <div class="task-info">
+          <div class="task-title">Keresés (lineáris)</div>
+          <div class="task-desc">Visszaadja a keresett elem indexét, vagy -1-et ha nincs meg.</div>
+        </div>
+        <span class="task-toggle">▼</span>
+      </div>
+      <div class="task-body">
+        <div class="code-wrap">
+          <div class="code-label"><span class="code-lang">C# · KONZOL</span><button class="copy-btn" onclick="copyCode(this)">Másolás</button></div>
+<pre><span class="kw">static int</span> <span class="fn">Kereses</span>(<span class="kw">int</span>[] T, <span class="kw">int</span> keresett)
+{
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i &lt; T.Length; i++)
+        <span class="kw">if</span> (T[i] == keresett)
+            <span class="kw">return</span> i;
+    <span class="kw">return</span> -<span class="nm">1</span>;
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <div class="task-header" onclick="toggle(this)">
+        <span class="task-num">OM02b</span>
+        <div class="task-info">
+          <div class="task-title">Megszámlálás</div>
+          <div class="task-desc">A páros elemek számát számolja meg a tömbben.</div>
+        </div>
+        <span class="task-toggle">▼</span>
+      </div>
+      <div class="task-body">
+        <div class="code-wrap">
+          <div class="code-label"><span class="code-lang">C# · KONZOL</span><button class="copy-btn" onclick="copyCode(this)">Másolás</button></div>
+<pre><span class="kw">static int</span> <span class="fn">Megszamlalas</span>(<span class="kw">int</span>[] T)
+{
+    <span class="kw">int</span> db = <span class="nm">0</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i &lt; T.Length; i++)
+        <span class="kw">if</span> (T[i] % <span class="nm">2</span> == <span class="nm">0</span>)
+            db++;
+    <span class="kw">return</span> db;
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <div class="task-header" onclick="toggle(this)">
+        <span class="task-num">OM02c</span>
+        <div class="task-info">
+          <div class="task-title">Összegzés</div>
+          <div class="task-desc">Összeadja a tömb összes elemét.</div>
+        </div>
+        <span class="task-toggle">▼</span>
+      </div>
+      <div class="task-body">
+        <div class="code-wrap">
+          <div class="code-label"><span class="code-lang">C# · KONZOL</span><button class="copy-btn" onclick="copyCode(this)">Másolás</button></div>
+<pre><span class="kw">static int</span> <span class="fn">Osszegzes</span>(<span class="kw">int</span>[] T)
+{
+    <span class="kw">int</span> s = <span class="nm">0</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i &lt; T.Length; i++)
+        s += T[i];
+    <span class="kw">return</span> s;
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <div class="task-header" onclick="toggle(this)">
+        <span class="task-num">OM02d</span>
+        <div class="task-info">
+          <div class="task-title">Eldöntés</div>
+          <div class="task-desc">Eldönti, hogy van-e negatív szám a tömbben.</div>
+        </div>
+        <span class="task-toggle">▼</span>
+      </div>
+      <div class="task-body">
+        <div class="code-wrap">
+          <div class="code-label"><span class="code-lang">C# · KONZOL</span><button class="copy-btn" onclick="copyCode(this)">Másolás</button></div>
+<pre><span class="kw">static bool</span> <span class="fn">Eldontes</span>(<span class="kw">int</span>[] T)
+{
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i &lt; T.Length; i++)
+        <span class="kw">if</span> (T[i] &lt; <span class="nm">0</span>)
+            <span class="kw">return</span> <span class="kw">true</span>;
+    <span class="kw">return</span> <span class="kw">false</span>;
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <div class="task-header" onclick="toggle(this)">
+        <span class="task-num">OM02e</span>
+        <div class="task-info">
+          <div class="task-title">Kiválasztás</div>
+          <div class="task-desc">Az első 100-as értékű elem indexét adja vissza (feltételezzük, hogy létezik).</div>
+        </div>
+        <span class="task-toggle">▼</span>
+      </div>
+      <div class="task-body">
+        <div class="code-wrap">
+          <div class="code-label"><span class="code-lang">C# · KONZOL</span><button class="copy-btn" onclick="copyCode(this)">Másolás</button></div>
+<pre><span class="kw">static int</span> <span class="fn">Kivalasztas</span>(<span class="kw">int</span>[] T)
+{
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i &lt; T.Length; i++)
+        <span class="kw">if</span> (T[i] == <span class="nm">100</span>)
+            <span class="kw">return</span> i;
+    <span class="kw">return</span> -<span class="nm">1</span>;
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── OM03 – LINQ és Versenyző ──────────────────── -->
+    <div class="orai-subhead" id="om03">
+      <span class="orai-tag konzol-tag">KONZOL</span>
+      <h3>LINQ és List&lt;T&gt; – Versenyző</h3>
+    </div>
+
+    <div class="task">
+      <div class="task-header" onclick="toggle(this)">
+        <span class="task-num">OM03a</span>
+        <div class="task-info">
+          <div class="task-title">Versenyző osztály és lista feltöltése</div>
+          <div class="task-desc">Egyszerű adatosztály tulajdonságokkal, generikus lista object-initializer szintaxissal.</div>
+        </div>
+        <span class="task-toggle">▼</span>
+      </div>
+      <div class="task-body">
+        <div class="code-wrap">
+          <div class="code-label"><span class="code-lang">C# · KONZOL</span><button class="copy-btn" onclick="copyCode(this)">Másolás</button></div>
+<pre><span class="kw">class</span> <span class="tp">Versenyzo</span>
+{
+    <span class="kw">public string</span> Nev      { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public int</span>    Pont     { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public bool</span>   Ervenyes { <span class="kw">get</span>; <span class="kw">set</span>; }
+}
+
+<span class="tp">List</span>&lt;<span class="tp">Versenyzo</span>&gt; lista = <span class="kw">new</span> <span class="tp">List</span>&lt;<span class="tp">Versenyzo</span>&gt;()
+{
+    <span class="kw">new</span> <span class="tp">Versenyzo</span>() { Nev=<span class="str">"Anna"</span>,  Pont=<span class="nm">12</span>, Ervenyes=<span class="kw">true</span>  },
+    <span class="kw">new</span> <span class="tp">Versenyzo</span>() { Nev=<span class="str">"Béla"</span>,  Pont=<span class="nm">8</span>,  Ervenyes=<span class="kw">false</span> },
+    <span class="kw">new</span> <span class="tp">Versenyzo</span>() { Nev=<span class="str">"Csaba"</span>, Pont=<span class="nm">15</span>, Ervenyes=<span class="kw">true</span>  },
+    <span class="kw">new</span> <span class="tp">Versenyzo</span>() { Nev=<span class="str">"Dóra"</span>,  Pont=<span class="nm">6</span>,  Ervenyes=<span class="kw">true</span>  }
+};</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <div class="task-header" onclick="toggle(this)">
+        <span class="task-num">OM03b</span>
+        <div class="task-info">
+          <div class="task-title">LINQ műveletek a listán</div>
+          <div class="task-desc">Where, Average, First, Max, Find – a leggyakoribb lekérdező metódusok lambda kifejezésekkel.</div>
+        </div>
+        <span class="task-toggle">▼</span>
+      </div>
+      <div class="task-body">
+        <div class="code-wrap">
+          <div class="code-label"><span class="code-lang">C# · KONZOL</span><button class="copy-btn" onclick="copyCode(this)">Másolás</button></div>
+<pre><span class="cm">// Csak az érvényes versenyzők</span>
+<span class="kw">var</span> ervenyesek = lista.<span class="fn">Where</span>(x =&gt; x.Ervenyes);
+
+<span class="cm">// Összes versenyző pontjainak átlaga</span>
+<span class="kw">var</span> atlag = lista.<span class="fn">Average</span>(x =&gt; x.Pont);
+
+<span class="cm">// Az első elem</span>
+<span class="kw">var</span> elso = lista.<span class="fn">First</span>();
+
+<span class="cm">// A legmagasabb pontszám</span>
+<span class="kw">var</span> max = lista.<span class="fn">Max</span>(x =&gt; x.Pont);
+
+<span class="cm">// Keresés névre (null-t ad vissza, ha nincs)</span>
+<span class="kw">var</span> keres = lista.<span class="fn">Find</span>(x =&gt; x.Nev == <span class="str">"Csaba"</span>);</pre>
+        </div>
+        <!-- LINQ referencia táblázat -->
+        <div class="ref-table-wrap">
+          <table class="ref-table">
+            <tr><th>Metódus</th><th>Mit csinál</th><th>Visszatérési típus</th></tr>
+            <tr><td>.Where(pred)</td><td>Szűr feltétel alapján</td><td>IEnumerable&lt;T&gt;</td></tr>
+            <tr><td>.First() / .FirstOrDefault()</td><td>Első elem (vagy null)</td><td>T</td></tr>
+            <tr><td>.Find(pred)</td><td>Első egyező (List-specifikus)</td><td>T</td></tr>
+            <tr><td>.Count() / .Count</td><td>Elemek száma</td><td>int</td></tr>
+            <tr><td>.Sum(sel)</td><td>Összeg</td><td>int / double</td></tr>
+            <tr><td>.Average(sel)</td><td>Átlag</td><td>double</td></tr>
+            <tr><td>.Min(sel) / .Max(sel)</td><td>Minimum / Maximum</td><td>T</td></tr>
+            <tr><td>.OrderBy(sel)</td><td>Növekvő rendezés</td><td>IEnumerable&lt;T&gt;</td></tr>
+            <tr><td>.Any(pred)</td><td>Van-e ilyen elem?</td><td>bool</td></tr>
+            <tr><td>.All(pred)</td><td>Minden ilyen?</td><td>bool</td></tr>
+            <tr><td>.Select(sel)</td><td>Vetítés / transzformáció</td><td>IEnumerable&lt;TResult&gt;</td></tr>
+            <tr><td>.ToList()</td><td>List&lt;T&gt;-vé alakítás</td><td>List&lt;T&gt;</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── OM04 – Mátrix ──────────────────────────────── -->
+    <div class="orai-subhead" id="om04">
+      <span class="orai-tag konzol-tag">KONZOL</span>
+      <h3>Mátrix – beolvasás és szimmetria</h3>
+    </div>
+
+    <div class="task">
+      <div class="task-header" onclick="toggle(this)">
+        <span class="task-num">OM04a</span>
+        <div class="task-info">
+          <div class="task-title">Mátrix beolvasása fájlból</div>
+          <div class="task-desc">Szöveges fájlból (soronként szóközzel elválasztott számok) n×n-es int[,] tömbbe olvassa az adatokat.</div>
+        </div>
+        <span class="task-toggle">▼</span>
+      </div>
+      <div class="task-body">
+        <div class="code-wrap">
+          <div class="code-label"><span class="code-lang">C# · KONZOL</span><button class="copy-btn" onclick="copyCode(this)">Másolás</button></div>
+<pre><span class="kw">static int</span>[,] <span class="fn">Beolvas</span>(<span class="kw">string</span> fajl)
+{
+    <span class="kw">string</span>[] sorok = <span class="tp">File</span>.<span class="fn">ReadAllLines</span>(fajl);
+    <span class="kw">int</span> n = sorok.Length;
+    <span class="kw">int</span>[,] M = <span class="kw">new int</span>[n, n];
+
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i &lt; n; i++)
+    {
+        <span class="kw">string</span>[] adatok = sorok[i].<span class="fn">Split</span>(<span class="str">' '</span>);
+        <span class="kw">for</span> (<span class="kw">int</span> j = <span class="nm">0</span>; j &lt; n; j++)
+            M[i, j] = <span class="kw">int</span>.<span class="fn">Parse</span>(adatok[j]);
+    }
+    <span class="kw">return</span> M;
+}
+
+<span class="cm">/* Példa bemeneti fájl (matrix.txt):
+   1 2 3
+   2 5 6
+   3 6 9
+*/</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <div class="task-header" onclick="toggle(this)">
+        <span class="task-num">OM04b</span>
+        <div class="task-info">
+          <div class="task-title">Szimmetria-ellenőrzés</div>
+          <div class="task-desc">Szimmetrikus, ha M[i,j] == M[j,i] minden párra. Csak a főátló feletti háromszöget vizsgálja.</div>
+        </div>
+        <span class="task-toggle">▼</span>
+      </div>
+      <div class="task-body">
+        <div class="code-wrap">
+          <div class="code-label"><span class="code-lang">C# · KONZOL</span><button class="copy-btn" onclick="copyCode(this)">Másolás</button></div>
+<pre><span class="kw">static bool</span> <span class="fn">Szimmetrikus</span>(<span class="kw">int</span>[,] M)
+{
+    <span class="kw">int</span> n = M.<span class="fn">GetLength</span>(<span class="nm">0</span>);
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i &lt; n; i++)
+        <span class="kw">for</span> (<span class="kw">int</span> j = i + <span class="nm">1</span>; j &lt; n; j++)
+            <span class="kw">if</span> (M[i, j] != M[j, i])
+                <span class="kw">return false</span>;
+    <span class="kw">return true</span>;
+}</pre>
+        </div>
+        <!-- Vizuális példa -->
+        <div class="preview-box">
+          <div class="preview-label">▶ VIZUÁLIS PÉLDA — szimmetrikus mátrix (zöld = ellenőrzött pár)</div>
+          <div class="matrix-vis" style="grid-template-columns:repeat(3,32px);gap:2px;display:inline-grid;">
+            <div class="mcell mdiag">1</div><div class="mcell msym">2</div><div class="mcell msym">3</div>
+            <div class="mcell msym">2</div><div class="mcell mdiag">5</div><div class="mcell msym">6</div>
+            <div class="mcell msym">3</div><div class="mcell msym">6</div><div class="mcell mdiag">9</div>
+          </div>
+          <div style="font-size:.72rem;color:var(--muted);margin-top:.6rem;font-family:'JetBrains Mono',monospace;">
+            kék = főátló (nem vizsgált) &nbsp;|&nbsp; zöld = M[i,j] == M[j,i] ✓
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── OM05 – WinForms Label Grid ────────────────── -->
+    <div class="orai-subhead" id="om05">
+      <span class="orai-tag wf-tag">WINFORMS</span>
+      <h3>Label Grid – véletlenszerű bool[,] rács</h3>
+    </div>
+
+    <div class="task">
+      <div class="task-header" onclick="toggle(this)">
+        <span class="task-num">OM05</span>
+        <div class="task-info">
+          <div class="task-title">WinForms – Label tömb (NumericUpDown + Panel)</div>
+          <div class="task-desc">Két NumericUpDown (sor/oszlop), Panel-re dinamikusan elhelyezett Label[,] tömb, véletlenszerű zöld/piros háttér.</div>
+        </div>
+        <span class="task-toggle">▼</span>
+      </div>
+      <div class="task-body">
+        <div class="code-wrap">
+          <div class="code-label"><span class="code-lang">C# · WINFORMS · Form1.cs</span><button class="copy-btn" onclick="copyCode(this)">Másolás</button></div>
+<pre><span class="kw">public partial class</span> <span class="tp">Form1</span> : <span class="tp">Form</span>
+{
+    <span class="tp">Label</span>[,] cimkek;
+    <span class="kw">bool</span>[,]   logikai;
+    <span class="kw">int</span> sor, oszlop;
+
+    <span class="kw">public</span> <span class="fn">Form1</span>()
+    {
+        <span class="fn">InitializeComponent</span>();
+    }
+
+    <span class="kw">private void</span> <span class="fn">numericUpDown1_ValueChanged</span>(<span class="kw">object</span> sender, <span class="tp">EventArgs</span> e)
+    {
+        sor    = (<span class="kw">int</span>)numericUpDown1.Value;
+        oszlop = (<span class="kw">int</span>)numericUpDown2.Value;
+
+        panel1.Controls.<span class="fn">Clear</span>();
+        cimkek  = <span class="kw">new</span> <span class="tp">Label</span>[sor, oszlop];
+        logikai = <span class="kw">new bool</span>[sor, oszlop];
+
+        <span class="tp">Random</span> r = <span class="kw">new</span> <span class="tp">Random</span>();
+
+        <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i &lt; sor; i++)
+        {
+            <span class="kw">for</span> (<span class="kw">int</span> j = <span class="nm">0</span>; j &lt; oszlop; j++)
+            {
+                logikai[i, j] = r.<span class="fn">Next</span>(<span class="nm">2</span>) == <span class="nm">1</span>;
+
+                cimkek[i, j]             = <span class="kw">new</span> <span class="tp">Label</span>();
+                cimkek[i, j].Width       = <span class="nm">40</span>;
+                cimkek[i, j].Height      = <span class="nm">40</span>;
+                cimkek[i, j].Left        = j * <span class="nm">42</span>;
+                cimkek[i, j].Top         = i * <span class="nm">42</span>;
+                cimkek[i, j].BorderStyle = <span class="tp">BorderStyle</span>.FixedSingle;
+                cimkek[i, j].BackColor   = logikai[i, j]
+                    ? <span class="tp">Color</span>.Lime
+                    : <span class="tp">Color</span>.Red;
+
+                panel1.Controls.<span class="fn">Add</span>(cimkek[i, j]);
+            }
+        }
+    }
+}</pre>
+        </div>
+        <!-- Interaktív demo -->
+        <div class="preview-box">
+          <div class="preview-label">▶ INTERAKTÍV ELŐNÉZET</div>
+          <div class="ctrl-row">
+            <span class="ctrl-lbl">Sor:</span>
+            <input type="number" class="ctrl-spin" id="om5rows" value="4" min="1" max="8">
+            <span class="ctrl-lbl">Oszlop:</span>
+            <input type="number" class="ctrl-spin" id="om5cols" value="5" min="1" max="10">
+            <button class="ctrl-btn" onclick="om5gen()">🎲 Generál</button>
+          </div>
+          <div id="om5grid"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── OM06 – WinForms Kártya memória ────────────── -->
+    <div class="orai-subhead" id="om06">
+      <span class="orai-tag wf-tag">WINFORMS</span>
+      <h3>Kártya-memória játék – WinForms Button változat</h3>
+    </div>
+    <p style="color:var(--muted);font-size:.8rem;margin-bottom:1.25rem;">A portfólió <strong style="color:var(--accent);">#18</strong> konzol alapú kártyajáték. Ez a WinForms Button-grid változat Timer-alapú visszafordítással.</p>
+
+    <div class="task">
+      <div class="task-header" onclick="toggle(this)">
+        <span class="task-num">OM06</span>
+        <div class="task-info">
+          <div class="task-title">WinForms – Button[,] memóriajáték + Timer</div>
+          <div class="task-desc">4×4-es Button rács, véletlenszerű számkiosztás, Timer-alapú visszafordítás, páros egyezés kezelése.</div>
+        </div>
+        <span class="task-toggle">▼</span>
+      </div>
+      <div class="task-body">
+        <div class="code-wrap">
+          <div class="code-label"><span class="code-lang">C# · WINFORMS · Form1.cs</span><button class="copy-btn" onclick="copyCode(this)">Másolás</button></div>
+<pre><span class="kw">public partial class</span> <span class="tp">Form1</span> : <span class="tp">Form</span>
+{
+    <span class="tp">Button</span>[,] gombok;
+    <span class="kw">int</span>[,]    ertekek;
+    <span class="kw">int</span> sor = <span class="nm">4</span>, oszlop = <span class="nm">4</span>;
+
+    <span class="tp">Button</span> elso    = <span class="kw">null</span>;
+    <span class="tp">Button</span> masodik = <span class="kw">null</span>;
+    <span class="tp">Timer</span>  t = <span class="kw">new</span> <span class="tp">Timer</span>();
+
+    <span class="kw">public</span> <span class="fn">Form1</span>()
+    {
+        <span class="fn">InitializeComponent</span>();
+        t.Interval = <span class="nm">800</span>;
+        t.Tick    += <span class="fn">T_Tick</span>;
+        <span class="fn">UjJatek</span>();
+    }
+
+    <span class="kw">private void</span> <span class="fn">UjJatek</span>()
+    {
+        panel1.Controls.<span class="fn">Clear</span>();
+        gombok  = <span class="kw">new</span> <span class="tp">Button</span>[sor, oszlop];
+        ertekek = <span class="kw">new int</span>[sor, oszlop];
+
+        <span class="tp">List</span>&lt;<span class="kw">int</span>&gt; lista = <span class="kw">new</span> <span class="tp">List</span>&lt;<span class="kw">int</span>&gt;();
+        <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">1</span>; i &lt;= (sor * oszlop) / <span class="nm">2</span>; i++)
+        {
+            lista.<span class="fn">Add</span>(i);
+            lista.<span class="fn">Add</span>(i);
+        }
+
+        <span class="tp">Random</span> r = <span class="kw">new</span> <span class="tp">Random</span>();
+        lista = lista.<span class="fn">OrderBy</span>(x =&gt; r.<span class="fn">Next</span>()).<span class="fn">ToList</span>();
+
+        <span class="kw">int</span> index = <span class="nm">0</span>;
+        <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i &lt; sor; i++)
+        {
+            <span class="kw">for</span> (<span class="kw">int</span> j = <span class="nm">0</span>; j &lt; oszlop; j++)
+            {
+                ertekek[i, j]       = lista[index++];
+                gombok[i, j]        = <span class="kw">new</span> <span class="tp">Button</span>();
+                gombok[i, j].Width  = <span class="nm">60</span>;
+                gombok[i, j].Height = <span class="nm">60</span>;
+                gombok[i, j].Left   = j * <span class="nm">62</span>;
+                gombok[i, j].Top    = i * <span class="nm">62</span>;
+                gombok[i, j].Font   = <span class="kw">new</span> <span class="tp">Font</span>(<span class="str">"Arial"</span>, <span class="nm">18</span>, <span class="tp">FontStyle</span>.Bold);
+                gombok[i, j].Click += <span class="fn">Gomb_Click</span>;
+                panel1.Controls.<span class="fn">Add</span>(gombok[i, j]);
+            }
+        }
+    }
+
+    <span class="kw">private void</span> <span class="fn">Gomb_Click</span>(<span class="kw">object</span> sender, <span class="tp">EventArgs</span> e)
+    {
+        <span class="tp">Button</span> b = sender <span class="kw">as</span> <span class="tp">Button</span>;
+        <span class="kw">int</span> x = b.Top  / <span class="nm">62</span>;
+        <span class="kw">int</span> y = b.Left / <span class="nm">62</span>;
+
+        b.Text    = ertekek[x, y].<span class="fn">ToString</span>();
+        b.Enabled = <span class="kw">false</span>;
+
+        <span class="kw">if</span> (elso == <span class="kw">null</span>)
+        {
+            elso = b;
+        }
+        <span class="kw">else</span>
+        {
+            masodik = b;
+            <span class="kw">if</span> (elso.Text == masodik.Text) { elso = <span class="kw">null</span>; masodik = <span class="kw">null</span>; }
+            <span class="kw">else</span> t.<span class="fn">Start</span>();
+        }
+    }
+
+    <span class="kw">private void</span> <span class="fn">T_Tick</span>(<span class="kw">object</span> sender, <span class="tp">EventArgs</span> e)
+    {
+        t.<span class="fn">Stop</span>();
+        elso.Text = masodik.Text = <span class="str">""</span>;
+        elso.Enabled = masodik.Enabled = <span class="kw">true</span>;
+        elso = masodik = <span class="kw">null</span>;
+    }
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── OM07 – Szökő gomb ─────────────────────────── -->
+    <div class="orai-subhead" id="om07">
+      <span class="orai-tag wf-tag">WINFORMS</span>
+      <h3>Szökő gomb – MouseMove esemény</h3>
+    </div>
+
+    <div class="task">
+      <div class="task-header" onclick="toggle(this)">
+        <span class="task-num">OM07</span>
+        <div class="task-info">
+          <div class="task-title">WinForms – véletlenszerű pozícióba ugró gomb</div>
+          <div class="task-desc">Amikor az egér a gomb fölé kerül (MouseMove), a gomb véletlenszerű pozícióba ugrik az ablakon belül.</div>
+        </div>
+        <span class="task-toggle">▼</span>
+      </div>
+      <div class="task-body">
+        <div class="code-wrap">
+          <div class="code-label"><span class="code-lang">C# · WINFORMS · Form1.cs</span><button class="copy-btn" onclick="copyCode(this)">Másolás</button></div>
+<pre><span class="kw">public partial class</span> <span class="tp">Form1</span> : <span class="tp">Form</span>
+{
+    <span class="tp">Random</span> r = <span class="kw">new</span> <span class="tp">Random</span>();
+
+    <span class="kw">public</span> <span class="fn">Form1</span>()
+    {
+        <span class="fn">InitializeComponent</span>();
+    }
+
+    <span class="kw">private void</span> <span class="fn">button1_MouseMove</span>(<span class="kw">object</span> sender, <span class="tp">MouseEventArgs</span> e)
+    {
+        button1.Left = r.<span class="fn">Next</span>(<span class="nm">0</span>, <span class="kw">this</span>.Width  - button1.Width);
+        button1.Top  = r.<span class="fn">Next</span>(<span class="nm">0</span>, <span class="kw">this</span>.Height - button1.Height);
+    }
+}</pre>
+        </div>
+        <!-- Demo -->
+        <div class="preview-box">
+          <div class="preview-label">▶ INTERAKTÍV DEMO — mozgasd az egeret a kék gombra</div>
+          <div class="sim-window" id="om7win">
+            <div class="sim-titlebar">
+              <div class="sim-dot" style="background:#ff5f57;"></div>
+              <div class="sim-dot" style="background:#febc2e;"></div>
+              <div class="sim-dot" style="background:#28c840;"></div>
+              <span style="margin-left:.4rem;">Form1</span>
+            </div>
+            <button class="sim-escape-btn" id="om7btn" style="left:140px;top:90px;">Kattints rám!</button>
+          </div>
+          <div style="font-size:.72rem;color:var(--muted);margin-top:.5rem;font-family:'JetBrains Mono',monospace;" id="om7status">Próbálj meg rákattintani...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── OM08 – Gomb események ─────────────────────── -->
+    <div class="orai-subhead" id="om08">
+      <span class="orai-tag wf-tag">WINFORMS</span>
+      <h3>Gomb események – Click, MouseHover, Width</h3>
+    </div>
+
+    <div class="task">
+      <div class="task-header" onclick="toggle(this)">
+        <span class="task-num">OM08</span>
+        <div class="task-info">
+          <div class="task-title">WinForms – három gomb, három esemény</div>
+          <div class="task-desc">Gomb1: kattintásra piros. Gomb2: kattintásra 10px-lel szélesebb. Gomb3: ráhúzásra sárga (MouseHover).</div>
+        </div>
+        <span class="task-toggle">▼</span>
+      </div>
+      <div class="task-body">
+        <div class="code-wrap">
+          <div class="code-label"><span class="code-lang">C# · WINFORMS · Form1.cs</span><button class="copy-btn" onclick="copyCode(this)">Másolás</button></div>
+<pre><span class="kw">public partial class</span> <span class="tp">Form1</span> : <span class="tp">Form</span>
+{
+    <span class="kw">public</span> <span class="fn">Form1</span>()
+    {
+        <span class="fn">InitializeComponent</span>();
+    }
+
+    <span class="cm">// Gomb1 – kattintásra vörös lesz</span>
+    <span class="kw">private void</span> <span class="fn">button1_Click</span>(<span class="kw">object</span> sender, <span class="tp">EventArgs</span> e)
+    {
+        button1.BackColor = <span class="tp">Color</span>.Red;
+    }
+
+    <span class="cm">// Gomb2 – kattintásra 10 px-szel szélesebb lesz</span>
+    <span class="kw">private void</span> <span class="fn">button2_Click</span>(<span class="kw">object</span> sender, <span class="tp">EventArgs</span> e)
+    {
+        button2.Width += <span class="nm">10</span>;
+    }
+
+    <span class="cm">// Gomb3 – ráhúzásra sárga lesz (MouseHover esemény!)</span>
+    <span class="kw">private void</span> <span class="fn">button3_MouseHover</span>(<span class="kw">object</span> sender, <span class="tp">EventArgs</span> e)
+    {
+        button3.BackColor = <span class="tp">Color</span>.Yellow;
+    }
+}</pre>
+        </div>
+        <!-- Demo -->
+        <div class="preview-box">
+          <div class="preview-label">▶ INTERAKTÍV DEMO</div>
+          <div class="sim-btns">
+            <div>
+              <button class="sim-btn2" id="om8b1" onclick="this.style.background='#cc0000';this.style.color='#fff'">Gomb1 – kattints</button>
+              <div style="font-size:.68rem;color:var(--muted);margin-top:.3rem;font-family:'JetBrains Mono',monospace;">→ BackColor = Red</div>
+            </div>
+            <div>
+              <button class="sim-btn2" id="om8b2" style="width:120px;" onclick="this.style.width=(parseInt(this.style.width||120)+10)+'px'">Gomb2 – kattints</button>
+              <div style="font-size:.68rem;color:var(--muted);margin-top:.3rem;font-family:'JetBrains Mono',monospace;">→ Width += 10px</div>
+            </div>
+            <div>
+              <button class="sim-btn2" id="om8b3" onmouseover="this.style.background='#ffd700'">Gomb3 – húzz rá</button>
+              <div style="font-size:.68rem;color:var(--muted);margin-top:.3rem;font-family:'JetBrains Mono',monospace;">→ BackColor = Yellow</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── OM09 – Ember combobox ─────────────────────── -->
+    <div class="orai-subhead" id="om09">
+      <span class="orai-tag wf-tag">WINFORMS</span>
+      <h3>Ember adatok – ComboBox (kor + fizetés)</h3>
+    </div>
+    <p style="color:var(--muted);font-size:.8rem;margin-bottom:1.25rem;">A portfólió <strong style="color:var(--accent);">#14</strong> (Telefonregiszter) szintén ComboBox + fájlolvasás, de Nev/Varos/Szam adatokkal. Ez Nev/Kor/Fizetes adatokat használ.</p>
+
+    <div class="task">
+      <div class="task-header" onclick="toggle(this)">
+        <span class="task-num">OM09</span>
+        <div class="task-info">
+          <div class="task-title">WinForms – Ember class, fájlból olvasás, ComboBox megjelenítés</div>
+          <div class="task-desc">adatok.txt beolvasása Ember osztályba (Nev, Kor, Fizetes), ComboBox-on név kiválasztásával az adatok megjelennek.</div>
+        </div>
+        <span class="task-toggle">▼</span>
+      </div>
+      <div class="task-body">
+        <div class="code-wrap">
+          <div class="code-label"><span class="code-lang">C# · WINFORMS · Form1.cs</span><button class="copy-btn" onclick="copyCode(this)">Másolás</button></div>
+<pre><span class="kw">public partial class</span> <span class="tp">Form1</span> : <span class="tp">Form</span>
+{
+    <span class="kw">class</span> <span class="tp">Ember</span>
+    {
+        <span class="kw">public string</span> Nev     { <span class="kw">get</span>; <span class="kw">set</span>; }
+        <span class="kw">public int</span>    Kor     { <span class="kw">get</span>; <span class="kw">set</span>; }
+        <span class="kw">public int</span>    Fizetes { <span class="kw">get</span>; <span class="kw">set</span>; }
+    }
+
+    <span class="tp">List</span>&lt;<span class="tp">Ember</span>&gt; lista = <span class="kw">new</span> <span class="tp">List</span>&lt;<span class="tp">Ember</span>&gt;();
+
+    <span class="kw">public</span> <span class="fn">Form1</span>()
+    {
+        <span class="fn">InitializeComponent</span>();
+        <span class="fn">Beolvas</span>();
+        <span class="fn">Feltolt</span>();
+    }
+
+    <span class="kw">void</span> <span class="fn">Beolvas</span>()
+    {
+        <span class="kw">foreach</span> (<span class="kw">var</span> sor <span class="kw">in</span> <span class="tp">File</span>.<span class="fn">ReadAllLines</span>(<span class="str">"adatok.txt"</span>))
+        {
+            <span class="kw">var</span> s = sor.<span class="fn">Split</span>(<span class="str">';'</span>);
+            lista.<span class="fn">Add</span>(<span class="kw">new</span> <span class="tp">Ember</span>()
+            {
+                Nev     = s[<span class="nm">0</span>],
+                Kor     = <span class="kw">int</span>.<span class="fn">Parse</span>(s[<span class="nm">1</span>]),
+                Fizetes = <span class="kw">int</span>.<span class="fn">Parse</span>(s[<span class="nm">2</span>])
+            });
+        }
+    }
+
+    <span class="kw">void</span> <span class="fn">Feltolt</span>()
+    {
+        <span class="kw">foreach</span> (<span class="kw">var</span> e <span class="kw">in</span> lista)
+            comboBox1.Items.<span class="fn">Add</span>(e.Nev);
+    }
+
+    <span class="kw">private void</span> <span class="fn">comboBox1_SelectedIndexChanged</span>(<span class="kw">object</span> sender, <span class="tp">EventArgs</span> e)
+    {
+        <span class="kw">var</span> ember = lista.<span class="fn">Find</span>(x =&gt; x.Nev == comboBox1.Text);
+        label1.Text = ember.Kor.<span class="fn">ToString</span>();
+        label2.Text = ember.Fizetes.<span class="fn">ToString</span>();
+    }
+}</pre>
+        </div>
+        <!-- Demo -->
+        <div class="preview-box">
+          <div class="preview-label">▶ INTERAKTÍV DEMO — adatok.txt tartalma alapján</div>
+          <div class="sim-form">
+            <div class="sim-frow">
+              <span class="sim-flbl">Név:</span>
+              <select class="sim-combo" id="om9combo" onchange="om9select()">
+                <option value="">-- válassz --</option>
+                <option>Anna</option><option>Béla</option><option>Csaba</option>
+                <option>Dóra</option><option>Eszter</option>
+              </select>
+            </div>
+            <div class="sim-frow">
+              <span class="sim-flbl">Kor:</span>
+              <span class="sim-fval" id="om9kor">—</span>
+            </div>
+            <div class="sim-frow">
+              <span class="sim-flbl">Fizetés:</span>
+              <span class="sim-fval" id="om9fiz">—</span>
+            </div>
+          </div>
+          <div style="font-size:.72rem;color:var(--muted);margin-top:.75rem;font-family:'JetBrains Mono',monospace;">
+            adatok.txt: Anna;28;380000 · Béla;35;520000 · Csaba;42;690000 · Dóra;24;310000 · Eszter;51;850000
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
 </main>
 
-<footer style="text-align:center;padding:2rem 1rem;border-top:1px solid var(--border);color:var(--muted);font-size:.78rem;letter-spacing:.04em;">
-  C# Portfólió · Visual Studio 2022 · .NET · <span style="color:var(--accent);">2025–2026</span>
+<footer style="position:fixed;bottom:0;left:0;right:0;z-index:100;text-align:center;padding:.65rem 1rem;border-top:1px solid var(--border);color:var(--muted);font-size:.78rem;letter-spacing:.04em;background:var(--bg);backdrop-filter:blur(8px);">
+  <span style="color:var(--text);font-weight:700;">Bacsó-Tóth Attila</span> &nbsp;·&nbsp; 11/P osztály &nbsp;·&nbsp; <span style="color:var(--accent);">2025–2026</span>
+  <span style="margin-left:1.2rem;color:var(--border);">|</span>
+  <span style="margin-left:1.2rem;">C# · Visual Studio 2022 · .NET</span>
   <span style="margin-left:1.2rem;color:var(--border);">|</span>
   <span style="margin-left:1.2rem;">Futtatás: <a href="https://wandbox.org" target="_blank" style="color:var(--accent);text-decoration:none;">Wandbox API</a></span>
 </footer>
@@ -3066,6 +3940,63 @@ namespace KartyaMemoriaKonzol
       ta.selectionStart = ta.selectionEnd = s + 4;
     }
   });
+
+  // ── OM05 – Label Grid demo ────────────────────────
+  function om5gen() {
+    const rows = parseInt(document.getElementById('om5rows').value) || 4;
+    const cols = parseInt(document.getElementById('om5cols').value) || 5;
+    const container = document.getElementById('om5grid');
+    container.innerHTML = '';
+    const grid = document.createElement('div');
+    grid.style.cssText = `display:inline-grid;grid-template-columns:repeat(${cols},40px);gap:2px;`;
+    for (let i = 0; i < rows; i++) {
+      for (let j = 0; j < cols; j++) {
+        const val  = Math.random() > 0.5;
+        const cell = document.createElement('div');
+        cell.style.cssText = `width:40px;height:40px;border-radius:2px;border:1px solid ${val?'#009900':'#990000'};background:${val?'#00c800':'#cc0000'};`;
+        grid.appendChild(cell);
+      }
+    }
+    container.appendChild(grid);
+  }
+  document.addEventListener('DOMContentLoaded', om5gen);
+
+  // ── OM07 – Szökő gomb demo ────────────────────────
+  (function() {
+    const win = document.getElementById('om7win');
+    const btn = document.getElementById('om7btn');
+    const status = document.getElementById('om7status');
+    if (!win || !btn) return;
+    let n = 0;
+    btn.addEventListener('mousemove', () => {
+      const titleH = 32;
+      const maxX = win.offsetWidth  - btn.offsetWidth  - 4;
+      const maxY = win.offsetHeight - btn.offsetHeight - titleH - 4;
+      btn.style.left = Math.floor(Math.random() * maxX) + 'px';
+      btn.style.top  = Math.floor(Math.random() * maxY + titleH) + 'px';
+      status.textContent = `Elmenekült ${++n} alkalommal. Fogd meg ha tudod!`;
+    });
+    btn.addEventListener('click', () => {
+      status.textContent = '🎉 Sikerült kattintani! (nagyon ritka)';
+      btn.style.background = '#28c840';
+      setTimeout(() => { btn.style.background = '#0078d4'; status.textContent = 'Most újra menekül...'; }, 1500);
+    });
+  })();
+
+  // ── OM09 – Ember ComboBox demo ────────────────────
+  const om9data = {
+    'Anna':   { kor: 28, fiz: 380000 },
+    'Béla':   { kor: 35, fiz: 520000 },
+    'Csaba':  { kor: 42, fiz: 690000 },
+    'Dóra':   { kor: 24, fiz: 310000 },
+    'Eszter': { kor: 51, fiz: 850000 },
+  };
+  function om9select() {
+    const val = document.getElementById('om9combo').value;
+    const d   = om9data[val];
+    document.getElementById('om9kor').textContent = d ? d.kor + ' év'                         : '—';
+    document.getElementById('om9fiz').textContent = d ? d.fiz.toLocaleString('hu-HU') + ' Ft' : '—';
+  }
 </script>
 </body>
 </html>

@@ -23,25 +23,16 @@ Mindkét esetben internetkapcsolat szükséges.
 
 A kódok futtatása a **JDoodle API**-n keresztül történik, egy saját **Cloudflare Worker** proxyn át (`plain-lab-e94f.attika-eger.workers.dev`). Ez biztosítja, hogy a böngésző és a JDoodle szerver közötti kommunikáció akadálymentesen működjön.
 
-| Komponens | Részlet |
-|---|---|
-| Fordító | C# / Mono (JDoodle API) |
-| Proxy | Cloudflare Worker (ingyenes, 100 000 kérés/nap) |
-| Napi limit | 200 futtatás / nap (JDoodle ingyenes csomag) |
-| Visszaállítás | minden éjfélkor (UTC) |
+- **Fordító** – C# / Mono (JDoodle API)
+- **Proxy** – Cloudflare Worker (ingyenes, 100 000 kérés/nap)
+- **Napi limit** – 200 futtatás / nap (JDoodle ingyenes csomag)
+- **Visszaállítás** – minden éjfélkor (UTC)
 
 ---
 
 ## Hibaelhárítás
 
-| Hiba | Megoldás |
-|---|---|
-<<<<<<< HEAD
-| `Failed to fetch` | A fájl `file://`-ból fut – Live Servert kell használni |
-| Üres konzol | Ellenőrizze a BEMENET mezőt, lehetséges, hogy hiányzik egy érték |
-| `429` hibakód | Napi limit elérve, másnap újraindul |
-=======
-| `429` hibakód | Napi limit elérve, másnap újraindul |
-| `401` hibakód | API credentials hiba – kérjük, értesítse a készítőt |
-| Üres konzol | Ellenőrizze a BEMENET mezőt, lehetséges, hogy hiányzik egy érték |
->>>>>>> 8e7bf9d0f66d45b49708d826939861a90a7df623
+- `Failed to fetch` – A fájl `file://`-ból fut, Live Servert kell használni
+- `429` hibakód – Napi limit elérve, másnap újraindul
+- `401` hibakód – API credentials hiba, kérjük értesítse a készítőt
+- Üres konzol – Ellenőrizze a BEMENET mezőt, lehetséges hogy hiányzik egy érték
