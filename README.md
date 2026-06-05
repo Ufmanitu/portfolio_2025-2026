@@ -1,6 +1,6 @@
 # C# Portfólió – Futtatási útmutató
 
-## Megnyitás
+## Megnyitás https://ufmanitu.github.io/portfolio_2025-2026/
 
 Az oldal közvetlenül elérhető a GitHub Pages linkre kattintva – telepítés vagy beállítás nem szükséges.
 
@@ -36,6 +36,12 @@ A kódok futtatása a **JDoodle API**-n keresztül történik, egy saját **Clou
 
 | Hiba | Megoldás |
 |---|---|
+<<<<<<< HEAD
 | `Failed to fetch` | A fájl `file://`-ból fut – Live Servert kell használni |
 | Üres konzol | Ellenőrizze a BEMENET mezőt, lehetséges, hogy hiányzik egy érték |
 | `429` hibakód | Napi limit elérve, másnap újraindul |
+=======
+| `429` hibakód | Napi limit elérve, másnap újraindul |
+| `401` hibakód | API credentials hiba – kérjük, értesítse a készítőt |
+| Üres konzol | Ellenőrizze a BEMENET mezőt, lehetséges, hogy hiányzik egy érték |
+>>>>>>> 8e7bf9d0f66d45b49708d826939861a90a7df623
