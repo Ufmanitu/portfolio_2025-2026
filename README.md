@@ -1,4 +1,4 @@
-# C# Portfólió – Futtatási útmutató
+# Bacsó-Tóth Attila 11/P 2025-26 Portfólió – Futtatási útmutató
 
 ## Megnyitás https://ufmanitu.github.io/portfolio_2025-2026/
 
