@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Órai munka – WinForms Ember (kor + fizetés)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;700;800&display=swap');
+  :root {
+    --bg:#0d0f14; --surface:#141720; --surface2:#1c2030; --border:#2a2f42;
+    --accent:#6c8cff; --green:#4ade80; --yellow:#fbbf24; --text:#d4d8e8;
+    --muted:#6b7280; --kw:#c084fc; --type:#67e8f9; --str:#86efac; --num:#fbbf24;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Syne',sans-serif; background:var(--bg); color:var(--text); padding:2rem 1.5rem 4rem; }
+  .page-header { text-align:center; margin-bottom:2.5rem; padding-bottom:1.5rem; border-bottom:1px solid var(--border); }
+  .badge { background:var(--green); color:#0d0f14; font-size:.7rem; font-weight:800; letter-spacing:.1em; padding:.25rem .6rem; border-radius:4px; display:inline-block; margin-bottom:.75rem; }
+  h1 { font-size:clamp(1.4rem,3vw,2rem); font-weight:800; background:linear-gradient(135deg,#fff 30%,var(--accent)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .subtitle { color:var(--muted); font-size:.85rem; margin-top:.4rem; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; margin-bottom:2rem; overflow:hidden; }
+  .card-header { padding:.8rem 1.25rem; background:var(--surface2); display:flex; align-items:center; gap:.75rem; border-bottom:1px solid var(--border); }
+  .card-num { background:var(--border); color:var(--accent); font-family:'JetBrains Mono',monospace; font-size:.72rem; font-weight:600; padding:.2rem .5rem; border-radius:4px; }
+  .card-title { font-size:.95rem; font-weight:700; }
+  .card-desc { color:var(--muted); font-size:.78rem; margin-top:.2rem; }
+  .copy-btn { margin-left:auto; font-size:.68rem; font-family:'JetBrains Mono',monospace; background:var(--border); color:var(--text); border:none; border-radius:4px; padding:.22rem .65rem; cursor:pointer; transition:background .2s; flex-shrink:0; }
+  .copy-btn:hover { background:var(--accent); color:#0d0f14; }
+  pre { padding:1.25rem; overflow-x:auto; font-family:'JetBrains Mono',monospace; font-size:.8rem; line-height:1.75; color:#abb2bf; background:#090b10; tab-size:4; }
+  .kw{color:var(--kw);} .tp{color:var(--type);} .str{color:var(--str);} .nm{color:var(--num);} .cm{color:#4b5563;font-style:italic;} .fn{color:#ffd580;}
+  .winforms-note { display:flex; align-items:flex-start; gap:.7rem; padding:.75rem 1.25rem; background:rgba(251,191,36,.05); border-top:1px solid rgba(251,191,36,.18); font-size:.79rem; color:rgba(251,191,36,.85); line-height:1.55; }
+  .diff-box { padding:.85rem 1.25rem; background:rgba(108,140,255,.05); border-top:1px solid rgba(108,140,255,.15); font-size:.8rem; color:var(--muted); line-height:1.7; }
+  .diff-box strong { color:var(--accent); }
+  /* Demo */
+  .demo-area { padding:1.25rem; background:#090b10; border-top:1px solid var(--border); }
+  .demo-label { font-size:.68rem; font-weight:700; letter-spacing:.08em; color:var(--muted); margin-bottom:.75rem; font-family:'JetBrains Mono',monospace; }
+  .sim-form { background:var(--surface2); border:1px solid var(--border); border-radius:6px; padding:1rem; display:inline-block; min-width:260px; }
+  .sim-row { display:flex; align-items:center; gap:.75rem; margin-bottom:.6rem; font-family:'JetBrains Mono',monospace; font-size:.82rem; }
+  .sim-label { color:var(--muted); width:70px; flex-shrink:0; }
+  .sim-val { color:var(--green); font-weight:600; }
+  .sim-combo { background:var(--surface); border:1px solid var(--border); color:var(--text); border-radius:4px; padding:.25rem .5rem; font-family:'JetBrains Mono',monospace; font-size:.8rem; }
+</style>
+</head>
+<body>
+<div class="page-header">
+  <div class="badge">🖥 WINFORMS ÓRAI MUNKA</div>
+  <h1>WinForms – Ember adatbázis (kor + fizetés)</h1>
+  <div class="subtitle">ComboBox · List&lt;Ember&gt; · fájlból olvasás — hiányzik a portfólióból</div>
+</div>
+
+<div class="diff-box">
+  ℹ️ A portfólió <strong>#14</strong>-es feladata (Telefonregiszter) szintén ComboBox + fájlolvasás, de <em>Nev, Varos, Szam</em> mezőkkel. Ez az órai változat <strong>Nev, Kor, Fizetes</strong> adatokat használ, az <code>adatok.txt</code> fájlból olvasva.
+</div>
+
+<!-- Kód -->
+<div class="card">
+  <div class="card-header">
+    <span class="card-num">01</span>
+    <div>
+      <div class="card-title">Form1.cs – teljes kód</div>
+      <div class="card-desc">Ember osztály Nev/Kor/Fizetes tulajdonságokkal, fájlból töltés, ComboBox szelekció esemény.</div>
+    </div>
+    <button class="copy-btn" onclick="copyPre(this)">Másolás</button>
+  </div>
+<pre><span class="kw">public partial class</span> <span class="tp">Form1</span> : <span class="tp">Form</span>
+{
+    <span class="kw">class</span> <span class="tp">Ember</span>
+    {
+        <span class="kw">public string</span> Nev     { <span class="kw">get</span>; <span class="kw">set</span>; }
+        <span class="kw">public int</span>    Kor     { <span class="kw">get</span>; <span class="kw">set</span>; }
+        <span class="kw">public int</span>    Fizetes { <span class="kw">get</span>; <span class="kw">set</span>; }
+    }
+
+    <span class="tp">List</span>&lt;<span class="tp">Ember</span>&gt; lista = <span class="kw">new</span> <span class="tp">List</span>&lt;<span class="tp">Ember</span>&gt;();
+
+    <span class="kw">public</span> <span class="fn">Form1</span>()
+    {
+        <span class="fn">InitializeComponent</span>();
+        <span class="fn">Beolvas</span>();
+        <span class="fn">Feltolt</span>();
+    }
+
+    <span class="kw">void</span> <span class="fn">Beolvas</span>()
+    {
+        <span class="kw">foreach</span> (<span class="kw">var</span> sor <span class="kw">in</span> <span class="tp">File</span>.<span class="fn">ReadAllLines</span>(<span class="str">"adatok.txt"</span>))
+        {
+            <span class="kw">var</span> s = sor.<span class="fn">Split</span>(<span class="str">';'</span>);
+            lista.<span class="fn">Add</span>(<span class="kw">new</span> <span class="tp">Ember</span>()
+            {
+                Nev     = s[<span class="nm">0</span>],
+                Kor     = <span class="kw">int</span>.<span class="fn">Parse</span>(s[<span class="nm">1</span>]),
+                Fizetes = <span class="kw">int</span>.<span class="fn">Parse</span>(s[<span class="nm">2</span>])
+            });
+        }
+    }
+
+    <span class="kw">void</span> <span class="fn">Feltolt</span>()
+    {
+        <span class="kw">foreach</span> (<span class="kw">var</span> e <span class="kw">in</span> lista)
+            comboBox1.Items.<span class="fn">Add</span>(e.Nev);
+    }
+
+    <span class="kw">private void</span> <span class="fn">comboBox1_SelectedIndexChanged</span>(<span class="kw">object</span> sender, <span class="tp">EventArgs</span> e)
+    {
+        <span class="kw">var</span> ember = lista.<span class="fn">Find</span>(x =&gt; x.Nev == comboBox1.Text);
+        label1.Text = ember.Kor.<span class="fn">ToString</span>();
+        label2.Text = ember.Fizetes.<span class="fn">ToString</span>();
+    }
+}</pre>
+  <div class="winforms-note">
+    ⚠️ <span><strong>WinForms projekt.</strong> Szükséges: comboBox1, label1 (kor), label2 (fizetés). Az <code>adatok.txt</code> formátuma: <code>Neve;30;450000</code> soronként. Másolj a projekt bin/Debug mappájába.</span>
+  </div>
+</div>
+
+<!-- Példa fájl -->
+<div class="card">
+  <div class="card-header">
+    <span class="card-num">02</span>
+    <div>
+      <div class="card-title">adatok.txt – példa fájl</div>
+      <div class="card-desc">Pontosvesszővel tagolt, soronként egy személy.</div>
+    </div>
+    <button class="copy-btn" onclick="copyPre(this)">Másolás</button>
+  </div>
+<pre style="color:var(--green);">Anna;28;380000
+Béla;35;520000
+Csaba;42;690000
+Dóra;24;310000
+Eszter;51;850000</pre>
+</div>
+
+<!-- Élő demo -->
+<div class="card">
+  <div class="card-header">
+    <span class="card-num">03</span>
+    <div>
+      <div class="card-title">Böngészős előnézet</div>
+      <div class="card-desc">Válassz nevet a legördülő listából – pontosan mint WinFormsban.</div>
+    </div>
+  </div>
+  <div class="demo-area">
+    <div class="demo-label">▶ SZIMULÁLT WINFORMS FORM</div>
+    <div class="sim-form">
+      <div class="sim-row">
+        <span class="sim-label">Név:</span>
+        <select class="sim-combo" id="simCombo" onchange="simSelect()">
+          <option value="">-- válassz --</option>
+          <option value="Anna">Anna</option>
+          <option value="Béla">Béla</option>
+          <option value="Csaba">Csaba</option>
+          <option value="Dóra">Dóra</option>
+          <option value="Eszter">Eszter</option>
+        </select>
+      </div>
+      <div class="sim-row">
+        <span class="sim-label">Kor:</span>
+        <span class="sim-val" id="simKor">—</span>
+      </div>
+      <div class="sim-row">
+        <span class="sim-label">Fizetés:</span>
+        <span class="sim-val" id="simFiz">—</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const adatok = {
+  Anna:   { kor: 28, fiz: 380000 },
+  Béla:   { kor: 35, fiz: 520000 },
+  Csaba:  { kor: 42, fiz: 690000 },
+  Dóra:   { kor: 24, fiz: 310000 },
+  Eszter: { kor: 51, fiz: 850000 },
+};
+function simSelect() {
+  const val = document.getElementById('simCombo').value;
+  if (val && adatok[val]) {
+    document.getElementById('simKor').textContent = adatok[val].kor + ' év';
+    document.getElementById('simFiz').textContent = adatok[val].fiz.toLocaleString('hu-HU') + ' Ft';
+  } else {
+    document.getElementById('simKor').textContent = '—';
+    document.getElementById('simFiz').textContent = '—';
+  }
+}
+function copyPre(btn) {
+  const pre = btn.closest('.card').querySelector('pre');
+  navigator.clipboard.writeText(pre.innerText).then(() => {
+    btn.textContent = '✓ Másolva';
+    setTimeout(() => btn.textContent = 'Másolás', 1800);
+  });
+}
+</script>
+</body>
+</html>

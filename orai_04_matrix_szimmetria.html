@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Órai munka – Mátrix beolvasás és szimmetria</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;700;800&display=swap');
+  :root {
+    --bg:#0d0f14; --surface:#141720; --surface2:#1c2030; --border:#2a2f42;
+    --accent:#6c8cff; --green:#4ade80; --yellow:#fbbf24; --text:#d4d8e8;
+    --muted:#6b7280; --kw:#c084fc; --type:#67e8f9; --str:#86efac; --num:#fbbf24;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Syne',sans-serif; background:var(--bg); color:var(--text); padding:2rem 1.5rem 4rem; }
+  .page-header { text-align:center; margin-bottom:2.5rem; padding-bottom:1.5rem; border-bottom:1px solid var(--border); }
+  .badge { background:var(--yellow); color:#0d0f14; font-size:.7rem; font-weight:800; letter-spacing:.1em; padding:.25rem .6rem; border-radius:4px; display:inline-block; margin-bottom:.75rem; }
+  h1 { font-size:clamp(1.4rem,3vw,2rem); font-weight:800; background:linear-gradient(135deg,#fff 30%,var(--accent)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .subtitle { color:var(--muted); font-size:.85rem; margin-top:.4rem; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; margin-bottom:2rem; overflow:hidden; }
+  .card-header { padding:.8rem 1.25rem; background:var(--surface2); display:flex; align-items:center; gap:.75rem; border-bottom:1px solid var(--border); }
+  .card-num { background:var(--border); color:var(--accent); font-family:'JetBrains Mono',monospace; font-size:.72rem; font-weight:600; padding:.2rem .5rem; border-radius:4px; }
+  .card-title { font-size:.95rem; font-weight:700; }
+  .card-desc { color:var(--muted); font-size:.78rem; margin-top:.2rem; }
+  .copy-btn { margin-left:auto; font-size:.68rem; font-family:'JetBrains Mono',monospace; background:var(--border); color:var(--text); border:none; border-radius:4px; padding:.22rem .65rem; cursor:pointer; transition:background .2s; flex-shrink:0; }
+  .copy-btn:hover { background:var(--accent); color:#0d0f14; }
+  pre { padding:1.25rem; overflow-x:auto; font-family:'JetBrains Mono',monospace; font-size:.8rem; line-height:1.75; color:#abb2bf; background:#090b10; tab-size:4; }
+  .kw{color:var(--kw);} .tp{color:var(--type);} .str{color:var(--str);} .nm{color:var(--num);} .cm{color:#4b5563;font-style:italic;} .fn{color:#ffd580;}
+  .example-box { padding:1rem 1.25rem; background:#090b10; border-top:1px solid var(--border); }
+  .example-label { font-size:.68rem; font-weight:700; letter-spacing:.08em; color:var(--muted); margin-bottom:.5rem; font-family:'JetBrains Mono',monospace; }
+  .matrix-vis { display:inline-grid; gap:2px; font-family:'JetBrains Mono',monospace; font-size:.85rem; }
+  .cell { width:32px; height:32px; display:flex; align-items:center; justify-content:center; border-radius:4px; background:var(--surface2); border:1px solid var(--border); color:var(--text); font-size:.78rem; }
+  .cell.diag { border-color:var(--accent); color:var(--accent); }
+  .cell.sym { background:rgba(74,222,128,.1); border-color:var(--green); color:var(--green); }
+</style>
+</head>
+<body>
+<div class="page-header">
+  <div class="badge">📚 ÓRAI MUNKA</div>
+  <h1>Mátrix – beolvasás és szimmetria</h1>
+  <div class="subtitle">int[,] fájlból olvasás · szimmetria-ellenőrzés — hiányzik a portfólióból</div>
+</div>
+
+<!-- Beolvasás -->
+<div class="card">
+  <div class="card-header">
+    <span class="card-num">01</span>
+    <div>
+      <div class="card-title">Mátrix beolvasása fájlból</div>
+      <div class="card-desc">Szöveges fájlból (soronként, szóközzel elválasztott számok) n×n-es kétdimenziós tömbbe olvassa be az adatokat.</div>
+    </div>
+    <button class="copy-btn" onclick="copyPre(this)">Másolás</button>
+  </div>
+<pre><span class="kw">static int</span>[,] <span class="fn">Beolvas</span>(<span class="kw">string</span> fajl)
+{
+    <span class="kw">string</span>[] sorok = <span class="tp">File</span>.<span class="fn">ReadAllLines</span>(fajl);
+    <span class="kw">int</span> n = sorok.Length;
+    <span class="kw">int</span>[,] M = <span class="kw">new int</span>[n, n];
+
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i &lt; n; i++)
+    {
+        <span class="kw">string</span>[] adatok = sorok[i].<span class="fn">Split</span>(<span class="str">' '</span>);
+        <span class="kw">for</span> (<span class="kw">int</span> j = <span class="nm">0</span>; j &lt; n; j++)
+            M[i, j] = <span class="kw">int</span>.<span class="fn">Parse</span>(adatok[j]);
+    }
+    <span class="kw">return</span> M;
+}
+
+<span class="cm">/* Példa bemeneti fájl (matrix.txt):
+   1 2 3
+   2 5 6
+   3 6 9
+*/</span></pre>
+</div>
+
+<!-- Szimmetria -->
+<div class="card">
+  <div class="card-header">
+    <span class="card-num">02</span>
+    <div>
+      <div class="card-title">Szimmetria-ellenőrzés</div>
+      <div class="card-desc">Egy mátrix szimmetrikus, ha M[i,j] == M[j,i] minden i,j párra. Csak a főátló feletti elemeket kell vizsgálni.</div>
+    </div>
+    <button class="copy-btn" onclick="copyPre(this)">Másolás</button>
+  </div>
+<pre><span class="kw">static bool</span> <span class="fn">Szimmetrikus</span>(<span class="kw">int</span>[,] M)
+{
+    <span class="kw">int</span> n = M.<span class="fn">GetLength</span>(<span class="nm">0</span>);
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i &lt; n; i++)
+        <span class="kw">for</span> (<span class="kw">int</span> j = i + <span class="nm">1</span>; j &lt; n; j++)
+            <span class="kw">if</span> (M[i, j] != M[j, i])
+                <span class="kw">return false</span>;
+    <span class="kw">return true</span>;
+}</pre>
+  <div class="example-box">
+    <div class="example-label">▶ VIZUÁLIS PÉLDA — szimmetrikus mátrix (zöld = ellenőrzött pár)</div>
+    <div class="matrix-vis" style="grid-template-columns:repeat(3,32px);">
+      <div class="cell diag">1</div><div class="cell sym">2</div><div class="cell sym">3</div>
+      <div class="cell sym">2</div><div class="cell diag">5</div><div class="cell sym">6</div>
+      <div class="cell sym">3</div><div class="cell sym">6</div><div class="cell diag">9</div>
+    </div>
+    <div style="font-size:.72rem;color:var(--muted);margin-top:.6rem;font-family:'JetBrains Mono',monospace;">
+      kék = főátló (nem vizsgált) &nbsp;|&nbsp; zöld = M[i,j] == M[j,i] ✓
+    </div>
+  </div>
+</div>
+
+<!-- Teljes program -->
+<div class="card">
+  <div class="card-header">
+    <span class="card-num">03</span>
+    <div>
+      <div class="card-title">Teljes konzolprogram</div>
+      <div class="card-desc">A két metódus együtt: beolvasás + szimmetria kiírása a konzolra.</div>
+    </div>
+    <button class="copy-btn" onclick="copyPre(this)">Másolás</button>
+  </div>
+<pre><span class="kw">using</span> System;
+<span class="kw">using</span> System.IO;
+
+<span class="kw">class</span> <span class="tp">Program</span>
+{
+    <span class="kw">static int</span>[,] <span class="fn">Beolvas</span>(<span class="kw">string</span> fajl)
+    {
+        <span class="kw">string</span>[] sorok = <span class="tp">File</span>.<span class="fn">ReadAllLines</span>(fajl);
+        <span class="kw">int</span> n = sorok.Length;
+        <span class="kw">int</span>[,] M = <span class="kw">new int</span>[n, n];
+        <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i &lt; n; i++)
+        {
+            <span class="kw">string</span>[] adatok = sorok[i].<span class="fn">Split</span>(<span class="str">' '</span>);
+            <span class="kw">for</span> (<span class="kw">int</span> j = <span class="nm">0</span>; j &lt; n; j++)
+                M[i, j] = <span class="kw">int</span>.<span class="fn">Parse</span>(adatok[j]);
+        }
+        <span class="kw">return</span> M;
+    }
+
+    <span class="kw">static bool</span> <span class="fn">Szimmetrikus</span>(<span class="kw">int</span>[,] M)
+    {
+        <span class="kw">int</span> n = M.<span class="fn">GetLength</span>(<span class="nm">0</span>);
+        <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i &lt; n; i++)
+            <span class="kw">for</span> (<span class="kw">int</span> j = i + <span class="nm">1</span>; j &lt; n; j++)
+                <span class="kw">if</span> (M[i, j] != M[j, i])
+                    <span class="kw">return false</span>;
+        <span class="kw">return true</span>;
+    }
+
+    <span class="kw">static void</span> <span class="fn">Main</span>()
+    {
+        <span class="kw">int</span>[,] M = <span class="fn">Beolvas</span>(<span class="str">"matrix.txt"</span>);
+        Console.<span class="fn">WriteLine</span>(<span class="fn">Szimmetrikus</span>(M)
+            ? <span class="str">"A mátrix szimmetrikus."</span>
+            : <span class="str">"A mátrix NEM szimmetrikus."</span>);
+    }
+}</pre>
+</div>
+
+<script>
+function copyPre(btn) {
+  const pre = btn.closest('.card').querySelector('pre');
+  navigator.clipboard.writeText(pre.innerText).then(() => {
+    btn.textContent = '✓ Másolva';
+    setTimeout(() => btn.textContent = 'Másolás', 1800);
+  });
+}
+</script>
+</body>
+</html>

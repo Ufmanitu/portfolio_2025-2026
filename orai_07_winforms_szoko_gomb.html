@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Órai munka – WinForms Szökő gomb</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;700;800&display=swap');
+  :root {
+    --bg:#0d0f14; --surface:#141720; --surface2:#1c2030; --border:#2a2f42;
+    --accent:#6c8cff; --green:#4ade80; --yellow:#fbbf24; --text:#d4d8e8;
+    --muted:#6b7280; --kw:#c084fc; --type:#67e8f9; --str:#86efac; --num:#fbbf24;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Syne',sans-serif; background:var(--bg); color:var(--text); padding:2rem 1.5rem 4rem; }
+  .page-header { text-align:center; margin-bottom:2.5rem; padding-bottom:1.5rem; border-bottom:1px solid var(--border); }
+  .badge { background:var(--green); color:#0d0f14; font-size:.7rem; font-weight:800; letter-spacing:.1em; padding:.25rem .6rem; border-radius:4px; display:inline-block; margin-bottom:.75rem; }
+  h1 { font-size:clamp(1.4rem,3vw,2rem); font-weight:800; background:linear-gradient(135deg,#fff 30%,var(--accent)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .subtitle { color:var(--muted); font-size:.85rem; margin-top:.4rem; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; margin-bottom:2rem; overflow:hidden; }
+  .card-header { padding:.8rem 1.25rem; background:var(--surface2); display:flex; align-items:center; gap:.75rem; border-bottom:1px solid var(--border); }
+  .card-num { background:var(--border); color:var(--accent); font-family:'JetBrains Mono',monospace; font-size:.72rem; font-weight:600; padding:.2rem .5rem; border-radius:4px; }
+  .card-title { font-size:.95rem; font-weight:700; }
+  .card-desc { color:var(--muted); font-size:.78rem; margin-top:.2rem; }
+  .copy-btn { margin-left:auto; font-size:.68rem; font-family:'JetBrains Mono',monospace; background:var(--border); color:var(--text); border:none; border-radius:4px; padding:.22rem .65rem; cursor:pointer; transition:background .2s; flex-shrink:0; }
+  .copy-btn:hover { background:var(--accent); color:#0d0f14; }
+  pre { padding:1.25rem; overflow-x:auto; font-family:'JetBrains Mono',monospace; font-size:.8rem; line-height:1.75; color:#abb2bf; background:#090b10; tab-size:4; }
+  .kw{color:var(--kw);} .tp{color:var(--type);} .str{color:var(--str);} .nm{color:var(--num);} .cm{color:#4b5563;font-style:italic;} .fn{color:#ffd580;}
+  .winforms-note { display:flex; align-items:flex-start; gap:.7rem; padding:.75rem 1.25rem; background:rgba(251,191,36,.05); border-top:1px solid rgba(251,191,36,.18); font-size:.79rem; color:rgba(251,191,36,.85); line-height:1.55; }
+  /* Demo area */
+  .demo-area { padding:1.25rem; background:#090b10; border-top:1px solid var(--border); }
+  .demo-label { font-size:.68rem; font-weight:700; letter-spacing:.08em; color:var(--muted); margin-bottom:.75rem; font-family:'JetBrains Mono',monospace; }
+  .demo-window { position:relative; width:100%; max-width:400px; height:220px; background:#1e1e2e; border:2px solid var(--border); border-radius:8px; overflow:hidden; }
+  .demo-titlebar { background:var(--surface2); padding:.35rem .75rem; font-size:.72rem; color:var(--muted); border-bottom:1px solid var(--border); display:flex; align-items:center; gap:.5rem; }
+  .win-dot { width:10px; height:10px; border-radius:50%; }
+  .demo-btn { position:absolute; background:#0078d4; color:#fff; border:none; border-radius:3px; padding:.4rem .9rem; font-size:.78rem; font-weight:700; cursor:none; transition:none; user-select:none; }
+  .demo-status { font-size:.7rem; color:var(--muted); font-family:'JetBrains Mono',monospace; margin-top:.5rem; }
+</style>
+</head>
+<body>
+<div class="page-header">
+  <div class="badge">🖥 WINFORMS ÓRAI MUNKA</div>
+  <h1>WinForms – Szökő gomb</h1>
+  <div class="subtitle">MouseMove esemény · véletlenszerű pozíció · menekülő Button — hiányzik a portfólióból</div>
+</div>
+
+<!-- Kód -->
+<div class="card">
+  <div class="card-header">
+    <span class="card-num">01</span>
+    <div>
+      <div class="card-title">Form1.cs – szökő gomb kódja</div>
+      <div class="card-desc">Amikor az egér a gomb fölé kerül (MouseMove), a gomb véletlenszerű pozícióba ugrik az ablakon belül.</div>
+    </div>
+    <button class="copy-btn" onclick="copyPre(this)">Másolás</button>
+  </div>
+<pre><span class="kw">public partial class</span> <span class="tp">Form1</span> : <span class="tp">Form</span>
+{
+    <span class="tp">Random</span> r = <span class="kw">new</span> <span class="tp">Random</span>();
+
+    <span class="kw">public</span> <span class="fn">Form1</span>()
+    {
+        <span class="fn">InitializeComponent</span>();
+    }
+
+    <span class="kw">private void</span> <span class="fn">button1_MouseMove</span>(<span class="kw">object</span> sender, <span class="tp">MouseEventArgs</span> e)
+    {
+        button1.Left = r.<span class="fn">Next</span>(<span class="nm">0</span>, <span class="kw">this</span>.Width  - button1.Width);
+        button1.Top  = r.<span class="fn">Next</span>(<span class="nm">0</span>, <span class="kw">this</span>.Height - button1.Height);
+    }
+}</pre>
+  <div class="winforms-note">
+    ⚠️ <span><strong>WinForms projekt.</strong> Elég egyetlen Button a Designerben. A <strong>MouseMove</strong> eseményt kell beállítani (nem Click!). Az ablak <code>FormBorderStyle = FixedSingle</code> és <code>MaximizeBox = false</code> javasolt.</span>
+  </div>
+</div>
+
+<!-- Élő demo -->
+<div class="card">
+  <div class="card-header">
+    <span class="card-num">02</span>
+    <div>
+      <div class="card-title">Böngészős előnézet</div>
+      <div class="card-desc">Mozgasd az egeret a kék gombra – el fog menekülni!</div>
+    </div>
+  </div>
+  <div class="demo-area">
+    <div class="demo-label">▶ SZIMULÁLT WINFORMS ABLAK</div>
+    <div class="demo-window" id="demoWin">
+      <div class="demo-titlebar">
+        <div class="win-dot" style="background:#ff5f57;"></div>
+        <div class="win-dot" style="background:#febc2e;"></div>
+        <div class="win-dot" style="background:#28c840;"></div>
+        <span style="margin-left:.4rem;">Form1</span>
+      </div>
+      <button class="demo-btn" id="escapingBtn" style="left:150px;top:90px;">Kattints rám!</button>
+    </div>
+    <div class="demo-status" id="demoStatus">Próbálj meg rákattintani a gombra...</div>
+  </div>
+</div>
+
+<script>
+const win = document.getElementById('demoWin');
+const btn = document.getElementById('escapingBtn');
+const status = document.getElementById('demoStatus');
+let escapeCount = 0;
+
+btn.addEventListener('mousemove', () => {
+  const winRect = win.getBoundingClientRect();
+  const titleH = 32;
+  const maxX = win.offsetWidth  - btn.offsetWidth  - 4;
+  const maxY = win.offsetHeight - btn.offsetHeight - titleH - 4;
+  btn.style.left = Math.floor(Math.random() * maxX) + 'px';
+  btn.style.top  = Math.floor(Math.random() * maxY + titleH) + 'px';
+  escapeCount++;
+  status.textContent = `Elmenekült ${escapeCount} alkalommal. Fogd meg ha tudod!`;
+});
+
+btn.addEventListener('click', () => {
+  status.textContent = '🎉 Sikerült kattintani! (nagyon ritka)';
+  btn.style.background = '#28c840';
+  setTimeout(() => { btn.style.background = '#0078d4'; status.textContent = 'Most újra menekül...'; }, 1500);
+});
+
+function copyPre(btn) {
+  const pre = btn.closest('.card').querySelector('pre');
+  navigator.clipboard.writeText(pre.innerText).then(() => {
+    btn.textContent = '✓ Másolva';
+    setTimeout(() => btn.textContent = 'Másolás', 1800);
+  });
+}
+</script>
+</body>
+</html>

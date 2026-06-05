@@ -414,6 +414,103 @@
     background: rgba(74,222,128,.15);
   }
 
+  .section-badge.orai { background: var(--yellow); }
+
+  /* Sub-nav az órai munkákhoz */
+  .orai-subnav {
+    display: flex;
+    gap: .4rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+    padding: .75rem 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+  .orai-subnav a {
+    font-size: .74rem;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-decoration: none;
+    color: var(--muted);
+    padding: .3rem .7rem;
+    border-radius: 5px;
+    border: 1px solid transparent;
+    transition: all .2s;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .orai-subnav a:hover {
+    color: var(--yellow);
+    border-color: var(--yellow);
+    background: rgba(251,191,36,.07);
+  }
+  .orai-subnav a.wf {
+    color: var(--muted);
+  }
+  .orai-subnav a.wf:hover {
+    color: var(--green);
+    border-color: var(--green);
+    background: rgba(74,222,128,.07);
+  }
+
+  /* Aloldal fejlécek */
+  .orai-subhead {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    margin: 2.5rem 0 1rem;
+    padding-bottom: .5rem;
+    border-bottom: 1px solid var(--border);
+    scroll-margin-top: 100px;
+  }
+  .orai-subhead:first-of-type { margin-top: 0; }
+  .orai-tag {
+    font-size: .65rem;
+    font-weight: 800;
+    letter-spacing: .1em;
+    padding: .2rem .55rem;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .orai-tag.konzol-tag { background: var(--accent); color: #0d0f14; }
+  .orai-tag.wf-tag     { background: var(--green);  color: #0d0f14; }
+  .orai-subhead h3 { font-size: 1.05rem; font-weight: 700; }
+
+  /* Referencia táblázat */
+  .ref-table { width:100%; border-collapse:collapse; font-family:'JetBrains Mono',monospace; font-size:.76rem; }
+  .ref-table th { background:var(--surface2); color:var(--muted); font-weight:600; letter-spacing:.06em; padding:.45rem .75rem; text-align:left; border-bottom:1px solid var(--border); }
+  .ref-table td { padding:.45rem .75rem; border-bottom:1px solid rgba(42,47,66,.5); }
+  .ref-table td:first-child { color:var(--accent); }
+  .ref-table td:nth-child(3) { color:var(--green); }
+  .ref-table-wrap { padding:0 1.25rem 1.25rem; background:#090b10; }
+
+  /* Mátrix vizuál */
+  .matrix-vis { display:inline-grid; gap:2px; font-family:'JetBrains Mono',monospace; }
+  .mcell { width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:4px;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-size:.75rem; }
+  .mcell.mdiag { border-color:var(--accent); color:var(--accent); }
+  .mcell.msym  { background:rgba(74,222,128,.1); border-color:var(--green); color:var(--green); }
+
+  /* Preview / demo dobozok */
+  .preview-box { padding:1.25rem; background:#090b10; border-top:1px solid var(--border); }
+  .preview-label { font-size:.67rem;font-weight:700;letter-spacing:.08em;color:var(--muted);margin-bottom:.75rem;font-family:'JetBrains Mono',monospace; }
+  .ctrl-row { display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin-bottom:.75rem; }
+  .ctrl-lbl { font-size:.72rem;color:var(--muted);font-family:'JetBrains Mono',monospace; }
+  .ctrl-spin { background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:.25rem .5rem;font-family:'JetBrains Mono',monospace;font-size:.78rem;width:60px; }
+  .ctrl-btn { background:var(--yellow);color:#0d0f14;border:none;border-radius:5px;padding:.3rem .8rem;font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;cursor:pointer; }
+
+  /* Sim gomb demo */
+  .sim-window { position:relative;width:100%;max-width:400px;height:220px;background:#1e1e2e;border:2px solid var(--border);border-radius:8px;overflow:hidden; }
+  .sim-titlebar { background:var(--surface2);padding:.35rem .75rem;font-size:.72rem;color:var(--muted);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.5rem; }
+  .sim-dot { width:10px;height:10px;border-radius:50%; }
+  .sim-escape-btn { position:absolute;background:#0078d4;color:#fff;border:none;border-radius:3px;padding:.4rem .9rem;font-size:.78rem;font-weight:700;cursor:none;user-select:none; }
+  .sim-btns { display:flex;gap:1rem;flex-wrap:wrap;align-items:flex-start; }
+  .sim-btn2 { border:none;border-radius:4px;padding:.5rem 1.2rem;font-size:.85rem;font-weight:700;cursor:pointer;background:#c0c0c0;color:#000; }
+  .sim-combo { background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:.25rem .5rem;font-family:'JetBrains Mono',monospace;font-size:.8rem; }
+  .sim-form { background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:1rem;display:inline-block;min-width:260px; }
+  .sim-frow { display:flex;align-items:center;gap:.75rem;margin-bottom:.6rem;font-family:'JetBrains Mono',monospace;font-size:.82rem; }
+  .sim-flbl { color:var(--muted);width:70px;flex-shrink:0; }
+  .sim-fval { color:var(--green);font-weight:600; }
+
   @media (max-width: 640px) {
     pre { font-size: .72rem; }
     header { padding: 2rem 1rem; }
@@ -431,14 +528,16 @@
 <nav>
   <a href="#konzol" class="active">Konzolos feladatok</a>
   <a href="#winforms">WinForms feladatok</a>
+  <a href="#orai">Órai munkák</a>
 </nav>
 
 <main>
 
   <div class="stats">
-    <div class="stat"><div class="stat-val">18</div><div class="stat-label">FELADAT</div></div>
+    <div class="stat"><div class="stat-val">27</div><div class="stat-label">FELADAT</div></div>
     <div class="stat"><div class="stat-val">11</div><div class="stat-label">KONZOLOS</div></div>
     <div class="stat"><div class="stat-val">7</div><div class="stat-label">WINFORMS</div></div>
+    <div class="stat"><div class="stat-val">9</div><div class="stat-label">ÓRAI MUNKA</div></div>
     <div class="stat"><div class="stat-val">C#</div><div class="stat-label">NYELV</div></div>
   </div>
 

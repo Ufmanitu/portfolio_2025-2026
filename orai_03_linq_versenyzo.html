@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Órai munka – LINQ és List&lt;T&gt;</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;700;800&display=swap');
+  :root {
+    --bg:#0d0f14; --surface:#141720; --surface2:#1c2030; --border:#2a2f42;
+    --accent:#6c8cff; --green:#4ade80; --yellow:#fbbf24; --text:#d4d8e8;
+    --muted:#6b7280; --kw:#c084fc; --type:#67e8f9; --str:#86efac; --num:#fbbf24;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Syne',sans-serif; background:var(--bg); color:var(--text); padding:2rem 1.5rem 4rem; }
+  .page-header { text-align:center; margin-bottom:2.5rem; padding-bottom:1.5rem; border-bottom:1px solid var(--border); }
+  .badge { background:var(--yellow); color:#0d0f14; font-size:.7rem; font-weight:800; letter-spacing:.1em; padding:.25rem .6rem; border-radius:4px; display:inline-block; margin-bottom:.75rem; }
+  h1 { font-size:clamp(1.4rem,3vw,2rem); font-weight:800; background:linear-gradient(135deg,#fff 30%,var(--accent)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .subtitle { color:var(--muted); font-size:.85rem; margin-top:.4rem; }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; margin-bottom:2rem; overflow:hidden; }
+  .card-header { padding:.8rem 1.25rem; background:var(--surface2); display:flex; align-items:center; gap:.75rem; border-bottom:1px solid var(--border); }
+  .card-num { background:var(--border); color:var(--accent); font-family:'JetBrains Mono',monospace; font-size:.72rem; font-weight:600; padding:.2rem .5rem; border-radius:4px; }
+  .card-title { font-size:.95rem; font-weight:700; }
+  .card-desc { color:var(--muted); font-size:.78rem; margin-top:.2rem; }
+  .copy-btn { margin-left:auto; font-size:.68rem; font-family:'JetBrains Mono',monospace; background:var(--border); color:var(--text); border:none; border-radius:4px; padding:.22rem .65rem; cursor:pointer; transition:background .2s; flex-shrink:0; }
+  .copy-btn:hover { background:var(--accent); color:#0d0f14; }
+  pre { padding:1.25rem; overflow-x:auto; font-family:'JetBrains Mono',monospace; font-size:.8rem; line-height:1.75; color:#abb2bf; background:#090b10; tab-size:4; }
+  .kw{color:var(--kw);} .tp{color:var(--type);} .str{color:var(--str);} .nm{color:var(--num);} .cm{color:#4b5563;font-style:italic;} .fn{color:#ffd580;}
+  .linq-table { width:100%; border-collapse:collapse; font-family:'JetBrains Mono',monospace; font-size:.78rem; }
+  .linq-table th { background:var(--surface2); color:var(--muted); font-weight:600; letter-spacing:.06em; padding:.5rem .75rem; text-align:left; border-bottom:1px solid var(--border); }
+  .linq-table td { padding:.5rem .75rem; border-bottom:1px solid rgba(42,47,66,.5); }
+  .linq-table td:first-child { color:var(--accent); }
+  .linq-table td:last-child { color:var(--green); }
+  .table-wrap { padding:0 1.25rem 1.25rem; background:#090b10; }
+</style>
+</head>
+<body>
+<div class="page-header">
+  <div class="badge">📚 ÓRAI MUNKA</div>
+  <h1>LINQ és List&lt;T&gt;</h1>
+  <div class="subtitle">Versenyző osztály · Where · Average · First · Max · Find — hiányzik a portfólióból</div>
+</div>
+
+<!-- Osztály + lista -->
+<div class="card">
+  <div class="card-header">
+    <span class="card-num">01</span>
+    <div>
+      <div class="card-title">Versenyző osztály és lista feltöltése</div>
+      <div class="card-desc">Egyszerű adatosztály tulajdonságokkal, majd generikus lista inicializálása object-initializer szintaxissal.</div>
+    </div>
+    <button class="copy-btn" onclick="copyPre(this)">Másolás</button>
+  </div>
+<pre><span class="kw">class</span> <span class="tp">Versenyzo</span>
+{
+    <span class="kw">public string</span> Nev     { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public int</span>    Pont    { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public bool</span>   Ervenyes { <span class="kw">get</span>; <span class="kw">set</span>; }
+}
+
+<span class="tp">List</span>&lt;<span class="tp">Versenyzo</span>&gt; lista = <span class="kw">new</span> <span class="tp">List</span>&lt;<span class="tp">Versenyzo</span>&gt;()
+{
+    <span class="kw">new</span> <span class="tp">Versenyzo</span>() { Nev=<span class="str">"Anna"</span>,  Pont=<span class="nm">12</span>, Ervenyes=<span class="kw">true</span>  },
+    <span class="kw">new</span> <span class="tp">Versenyzo</span>() { Nev=<span class="str">"Béla"</span>,  Pont=<span class="nm">8</span>,  Ervenyes=<span class="kw">false</span> },
+    <span class="kw">new</span> <span class="tp">Versenyzo</span>() { Nev=<span class="str">"Csaba"</span>, Pont=<span class="nm">15</span>, Ervenyes=<span class="kw">true</span>  },
+    <span class="kw">new</span> <span class="tp">Versenyzo</span>() { Nev=<span class="str">"Dóra"</span>,  Pont=<span class="nm">6</span>,  Ervenyes=<span class="kw">true</span>  }
+};</pre>
+</div>
+
+<!-- LINQ műveletek -->
+<div class="card">
+  <div class="card-header">
+    <span class="card-num">02</span>
+    <div>
+      <div class="card-title">LINQ műveletek a listán</div>
+      <div class="card-desc">A leggyakoribb lekérdező metódusok lambda kifejezésekkel.</div>
+    </div>
+    <button class="copy-btn" onclick="copyPre(this)">Másolás</button>
+  </div>
+<pre><span class="cm">// Csak az érvényes versenyzők</span>
+<span class="kw">var</span> ervenyesek = lista.<span class="fn">Where</span>(x =&gt; x.Ervenyes);
+
+<span class="cm">// Összes versenyző pontjainak átlaga</span>
+<span class="kw">var</span> atlag = lista.<span class="fn">Average</span>(x =&gt; x.Pont);
+
+<span class="cm">// Az első elem (kivételt dob, ha üres a lista)</span>
+<span class="kw">var</span> elso = lista.<span class="fn">First</span>();
+
+<span class="cm">// A legmagasabb pontszám</span>
+<span class="kw">var</span> max = lista.<span class="fn">Max</span>(x =&gt; x.Pont);
+
+<span class="cm">// Keresés névre (null-t ad vissza, ha nincs)</span>
+<span class="kw">var</span> keres = lista.<span class="fn">Find</span>(x =&gt; x.Nev == <span class="str">"Csaba"</span>);</pre>
+</div>
+
+<!-- Gyors referencia -->
+<div class="card">
+  <div class="card-header">
+    <span class="card-num">03</span>
+    <div>
+      <div class="card-title">LINQ gyors referencia</div>
+      <div class="card-desc">A legfontosabb List&lt;T&gt; és LINQ metódusok összefoglalva.</div>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table class="linq-table">
+      <tr><th>Metódus</th><th>Mit csinál</th><th>Visszatérési típus</th></tr>
+      <tr><td>.Where(pred)</td><td>Szűr feltétel alapján</td><td>IEnumerable&lt;T&gt;</td></tr>
+      <tr><td>.First() / .FirstOrDefault()</td><td>Első elem (vagy null)</td><td>T</td></tr>
+      <tr><td>.Last() / .LastOrDefault()</td><td>Utolsó elem (vagy null)</td><td>T</td></tr>
+      <tr><td>.Find(pred)</td><td>Első egyező (List-specifikus)</td><td>T</td></tr>
+      <tr><td>.Count() / .Count</td><td>Elemek száma</td><td>int</td></tr>
+      <tr><td>.Sum(sel)</td><td>Összeg</td><td>int / double</td></tr>
+      <tr><td>.Average(sel)</td><td>Átlag</td><td>double</td></tr>
+      <tr><td>.Min(sel) / .Max(sel)</td><td>Minimum / Maximum</td><td>T</td></tr>
+      <tr><td>.OrderBy(sel)</td><td>Növekvő rendezés</td><td>IEnumerable&lt;T&gt;</td></tr>
+      <tr><td>.OrderByDescending(sel)</td><td>Csökkenő rendezés</td><td>IEnumerable&lt;T&gt;</td></tr>
+      <tr><td>.Any(pred)</td><td>Van-e ilyen elem?</td><td>bool</td></tr>
+      <tr><td>.All(pred)</td><td>Minden ilyen?</td><td>bool</td></tr>
+      <tr><td>.Select(sel)</td><td>Vetítés / transzformáció</td><td>IEnumerable&lt;TResult&gt;</td></tr>
+      <tr><td>.ToList()</td><td>List&lt;T&gt;-vé alakítás</td><td>List&lt;T&gt;</td></tr>
+    </table>
+  </div>
+</div>
+
+<script>
+function copyPre(btn) {
+  const pre = btn.closest('.card').querySelector('pre');
+  navigator.clipboard.writeText(pre.innerText).then(() => {
+    btn.textContent = '✓ Másolva';
+    setTimeout(() => btn.textContent = 'Másolás', 1800);
+  });
+}
+</script>
+</body>
+</html>
